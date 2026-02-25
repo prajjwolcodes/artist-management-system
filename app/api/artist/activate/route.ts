@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { pool } from "@/lib/db";
 
@@ -120,12 +121,31 @@ export async function POST(req: NextRequest) {
             ]
         );
 
+        const jwtToken = jwt.sign(
+            {
+                id: user.id,
+                role: user.role,
+            },
+            process.env.JWT_SECRET as string,
+            { expiresIn: "1d" }
+        );
+
         await client.query("COMMIT");
 
-        return NextResponse.json({
+
+        const response = NextResponse.json({
             message: "Account activated successfully and logged in",
+            token: jwtToken,
         });
 
+        response.cookies.set("token", jwtToken, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            path: "/",
+        });
+
+        return response;
     } catch (error) {
         await client.query("ROLLBACK");
         console.error(error);
