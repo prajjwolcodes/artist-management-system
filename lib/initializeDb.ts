@@ -68,7 +68,7 @@ export async function initDB() {
     await pool.query(`
      CREATE TABLE IF NOT EXISTS music (
   id SERIAL PRIMARY KEY,
-  artist_id INT REFERENCES artists(id) ON DELETE RESTRICT,
+  artist_id INT REFERENCES artists(user_id) ON DELETE RESTRICT,
   title VARCHAR(255) NOT NULL,
   album_name VARCHAR(255),
   genre genre_enum,
