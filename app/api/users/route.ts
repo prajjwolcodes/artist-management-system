@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
         );
 
         const total = parseInt(totalResult.rows[0].count);
+        const totalPages = Math.ceil(total / limit);
 
         return NextResponse.json({
             users: users.rows,
@@ -35,7 +36,9 @@ export async function GET(req: NextRequest) {
                 total,
                 page,
                 limit,
-                totalPages: Math.ceil(total / limit),
+                totalPages,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
             },
         });
     } catch (error) {
@@ -90,9 +93,9 @@ export async function POST(req: NextRequest) {
         // Insert user
         await pool.query(`
             INSERT INTO users 
-            (email, role, created_by, activation_token, activation_expires, is_active)
-            VALUES ($1, $2, $3, $4, $5, false)`,
-            [email, role, user.id, token, expires]
+            (email, role, activation_token, activation_expires, is_active)
+            VALUES ($1, $2, $3, $4, false)`,
+            [email, role, token, expires]
         );
 
         const activationLink = `${process.env.NEXT_PUBLIC_APP_URL}/activate?token=${token}`;

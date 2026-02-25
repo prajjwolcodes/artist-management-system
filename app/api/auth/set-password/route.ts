@@ -62,7 +62,8 @@ export async function POST(req: NextRequest) {
           dob = $5,
           address = $6,
           gender = $7,
-          phone = $8
+          phone = $8,
+          profile_complete = true
       WHERE id = $2
       `,
             [hashedPassword, user.id, first_name, last_name, dob, address, gender, phone]
@@ -78,7 +79,8 @@ export async function POST(req: NextRequest) {
         );
 
         const response = NextResponse.json({
-            message: "Account activated successfully",
+            message: "Account activated successfully and logged in",
+            token: jwtToken,
         });
 
         response.cookies.set("token", jwtToken, {

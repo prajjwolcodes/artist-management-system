@@ -45,7 +45,8 @@ export async function POST(req: Request) {
                 : role || "artist";
 
         const finalIsActive = finalRole === "super_admin" ? true : false;
-        await pool.query(`INSERT INTO users (first_name, last_name, email, password, phone, dob, address, gender, role, is_active) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`, [first_name, last_name, email, hashedPassword, phone, dob, address, gender, finalRole, finalIsActive]);
+        const isProfileComplete = finalRole === "super_admin" ? true : false;
+        await pool.query(`INSERT INTO users (first_name, last_name, email, password, phone, dob, address, gender, role, is_active, profile_complete) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`, [first_name, last_name, email, hashedPassword, phone, dob, address, gender, finalRole, finalIsActive, isProfileComplete]);
 
         return NextResponse.json({ message: "User registered successfully" }, { status: 201 }
         );
