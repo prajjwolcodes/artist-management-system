@@ -1,9 +1,107 @@
-import React from 'react'
+'use client';
 
-const page = () => {
+import { useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from 'sonner';
+import Link from 'next/link';
+import { Music } from 'lucide-react';
+
+export default function LoginPage() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const { login, currentUser } = useAuth();
+    const router = useRouter();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        try {
+            await login(email, password);
+            toast.success('Login successful');
+            // Navigate based on user role
+            const userRole = currentUser?.role;
+            if (userRole === 'artist') {
+                router.push('/artist');
+            } else if (userRole === 'artist_manager') {
+                router.push('/manager');
+            } else {
+                router.push('/dashboard');
+            }
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Login failed');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
-        <div>page</div>
-    )
-}
+        <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
+            <div className="w-full max-w-md space-y-8">
+                {/* Logo */}
+                <div className="flex items-center justify-center gap-2">
+                    <Music className="w-8 h-8 text-primary" />
+                    <h1 className="text-2xl font-bold">MusicHub</h1>
+                </div>
 
-export default page
+                {/* Card */}
+                <Card className="border border-border bg-card">
+                    <CardHeader>
+                        <CardTitle>Sign In</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="text-sm font-medium">
+                                    Email
+                                </label>
+                                <Input
+                                    id="email"
+                                    type="email"
+                                    placeholder="you@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="password" className="text-sm font-medium">
+                                    Password
+                                </label>
+                                <Input
+                                    id="password"
+                                    type="password"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <Button
+                                type="submit"
+                                disabled={isLoading}
+                                className="w-full bg-primary hover:bg-primary/90"
+                            >
+                                {isLoading ? 'Signing in...' : 'Sign In'}
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
+
+                {/* Sign Up Link */}
+                <p className="text-center text-sm text-muted-foreground">
+                    Don't have an account?{' '}
+                    <Link href="/register" className="text-primary hover:underline font-medium">
+                        Create one
+                    </Link>
+                </p>
+            </div>
+        </div>
+    );
+}
