@@ -2,14 +2,16 @@
 
 import { toast } from 'sonner';
 import { useAuth } from '@/lib/auth-context';
-import React from 'react'
+import { useRouter } from 'next/navigation';
 
-const page = () => {
+const LogoutButton = () => {
     const { logout } = useAuth();
+    const router = useRouter();
 
     function handleLogout() {
         logout();
         toast.success('Logout successful');
+        router.push('/login');
     }
 
     return (
@@ -19,4 +21,4 @@ const page = () => {
     )
 }
 
-export default page
+export default LogoutButton

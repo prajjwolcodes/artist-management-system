@@ -1,5 +1,5 @@
 // User and authentication types
-export type UserRole = 'admin' | 'artist_manager' | 'artist';
+export type UserRole = 'super_admin' | 'artist_manager' | 'artist';
 
 export interface UserProfile {
     first_name: string;
@@ -43,7 +43,9 @@ export interface AuthContextType {
     currentUser: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (email: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<UserRole>;
     logout: () => void;
     register: (data: UserProfile) => Promise<void>;
+    updateProfile: (data: Partial<UserProfile>) => Promise<void>;
+    getUserRole: () => UserRole | null;
 }

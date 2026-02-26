@@ -6,16 +6,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Music } from 'lucide-react';
 import { useEffect } from 'react';
+import { getDashboardRoute } from '@/helpers/route-protection';
 
 export default function ArtistDashboard() {
-    const { currentUser, logout } = useAuth();
+    const { currentUser, logout, isLoading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (!currentUser || currentUser.role !== 'artist') {
+        if (isLoading) return;
+
+        if (!currentUser) {
             router.push('/login');
+        } else if (currentUser.role !== 'artist') {
+            router.push(getDashboardRoute(currentUser.role));
         }
-    }, [currentUser, router]);
+    }, [currentUser, isLoading, router]);
 
     if (!currentUser) {
         return null;

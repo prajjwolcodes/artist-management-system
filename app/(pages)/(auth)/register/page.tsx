@@ -68,7 +68,7 @@ export default function ActivateAccountPage() {
             await register(formData)
             console.log(formData)
             toast.success('Account created successfully!');
-            // router.push('/artist');
+            router.push('/login');
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Registration failed');
         } finally {

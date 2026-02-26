@@ -22,16 +22,20 @@ export default function LoginPage() {
         setIsLoading(true);
 
         try {
-            await login(email, password);
+            const userRole = await login(email, password);
             toast.success('Login successful');
+
             // Navigate based on user role
-            const userRole = currentUser?.role;
-            if (userRole === 'artist') {
+            console.log(userRole)
+            if (userRole == 'artist') {
                 router.push('/artist');
-            } else if (userRole === 'artist_manager') {
+            } else if (userRole == 'artist_manager') {
                 router.push('/manager');
-            } else {
+            } else if (userRole == 'super_admin') {
                 router.push('/dashboard');
+            }
+            else {
+                router.push('/');
             }
         } catch (error) {
             toast.error(error instanceof Error ? error.message : 'Login failed');

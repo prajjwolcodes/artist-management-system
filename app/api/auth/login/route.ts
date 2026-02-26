@@ -24,10 +24,15 @@ export async function POST(req: Request) {
 
         const { email, password } = parsed.data;
 
-        const existingUser = await pool.query("SELECT id, password, role, first_name, last_name FROM users WHERE email = $1", [email]);
+        const existingUser = await pool.query("SELECT id, password, role, first_name, last_name, is_active FROM users WHERE email = $1", [email]);
 
         if (existingUser.rows.length === 0) {
             return NextResponse.json({ error: "Invalid email or password" }, { status: 400 });
+        }
+        console.log(existingUser.rows[0])
+
+        if (existingUser.rows[0].is_active === false) {
+            return NextResponse.json({ error: "Account is not active. Please contact support." }, { status: 403 });
         }
 
         const checkPassword = await bcrypt.compare(password, existingUser.rows[0].password);
