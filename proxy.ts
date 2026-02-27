@@ -18,8 +18,9 @@ export function proxy(req: NextRequest) {
     // User logged in
     try {
         verifyToken(token);
+
         if (publicRoutes.includes(pathname)) {
-            return NextResponse.redirect(new URL("/dashboard", req.url));
+            return NextResponse.redirect(new URL("/admin", req.url));
         }
         return NextResponse.next();
     } catch (error) {
@@ -31,8 +32,8 @@ export function proxy(req: NextRequest) {
 
 export const config = {
     matcher: [
-        "/dashboard",
-        "/dashboard/:path*",
+        "/admin",
+        "/admin/:path*",
         "/login",
         "/register"]
 

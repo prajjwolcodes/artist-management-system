@@ -32,7 +32,7 @@ export default function LoginPage() {
             } else if (userRole == 'artist_manager') {
                 router.push('/manager');
             } else if (userRole == 'super_admin') {
-                router.push('/dashboard');
+                router.push('/admin');
             }
             else {
                 router.push('/');

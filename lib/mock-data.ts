@@ -1,11 +1,23 @@
 import { User, Artist, MusicTrack } from './types';
 
 export const mockUsers: Record<string, User & { password: string }> = {
+  admin: {
+    id: 'user-admin-1',
+    email: 'admin@example.com',
+    name: 'Admin User',
+    role: 'super_admin',
+    password: 'password123',
+    profile: {
+      first_name: 'Admin',
+      last_name: 'User',
+      email: 'admin@example.com',
+    },
+  },
   manager: {
     id: 'user-manager-1',
     email: 'manager@example.com',
     name: 'Alex Manager',
-    role: 'manager',
+    role: 'artist_manager',
     password: 'password123',
     profile: {
       first_name: 'Alex',
@@ -23,7 +35,7 @@ export const mockUsers: Record<string, User & { password: string }> = {
       first_name: 'Sarah',
       last_name: 'Chen',
       email: 'artist1@example.com',
-      dob: '1995-03-15',
+      dateOfBirth: '1995-03-15',
       gender: 'female',
       address: '123 Music Lane, Nashville, TN',
       firstReleaseYear: 2018,
@@ -40,7 +52,7 @@ export const mockUsers: Record<string, User & { password: string }> = {
       first_name: 'Jordan',
       last_name: 'Miles',
       email: 'artist2@example.com',
-      dob: '1992-07-22',
+      dateOfBirth: '1992-07-22',
       gender: 'male',
       address: '456 Artist Ave, Los Angeles, CA',
       firstReleaseYear: 2015,
@@ -58,6 +70,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 3,
     status: 'active',
     createdAt: '2024-01-15',
+    managerId: 'user-manager-1',
+    managerName: 'Alex Manager',
   },
   {
     id: 'artist-2',
@@ -67,6 +81,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 5,
     status: 'active',
     createdAt: '2023-11-20',
+    managerId: 'user-manager-1',
+    managerName: 'Alex Manager',
   },
   {
     id: 'artist-3',
@@ -76,6 +92,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 2,
     status: 'active',
     createdAt: '2024-02-03',
+    managerId: 'user-manager-2',
+    managerName: 'Blake Robertson',
   },
   {
     id: 'artist-4',
@@ -85,6 +103,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 4,
     status: 'pending',
     createdAt: '2024-02-10',
+    managerId: 'user-manager-3',
+    managerName: 'Casey Johnson',
   },
   {
     id: 'artist-5',
@@ -94,6 +114,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 1,
     status: 'active',
     createdAt: '2024-02-05',
+    managerId: 'user-manager-2',
+    managerName: 'Blake Robertson',
   },
   {
     id: 'artist-6',
@@ -103,6 +125,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 6,
     status: 'active',
     createdAt: '2024-01-08',
+    managerId: 'user-manager-4',
+    managerName: 'Dana Lee',
   },
   {
     id: 'artist-7',
@@ -112,6 +136,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 1,
     status: 'pending',
     createdAt: '2024-02-12',
+    managerId: 'user-manager-3',
+    managerName: 'Casey Johnson',
   },
   {
     id: 'artist-8',
@@ -121,6 +147,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 3,
     status: 'active',
     createdAt: '2024-01-25',
+    managerId: 'user-manager-5',
+    managerName: 'Eric Martinez',
   },
   {
     id: 'artist-9',
@@ -130,6 +158,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 2,
     status: 'inactive',
     createdAt: '2024-01-10',
+    managerId: 'user-manager-6',
+    managerName: 'Fiona Brown',
   },
   {
     id: 'artist-10',
@@ -139,6 +169,8 @@ export const mockArtists: Artist[] = [
     albumsReleased: 7,
     status: 'active',
     createdAt: '2023-12-15',
+    managerId: 'user-manager-4',
+    managerName: 'Dana Lee',
   },
 ];
 
@@ -182,5 +214,80 @@ export const mockTracks: MusicTrack[] = [
     genre: 'Ambient',
     createdAt: '2023-12-25',
     artistId: 'user-artist-2',
+  },
+];
+
+export const mockManagers: (User & { password: string })[] = [
+  {
+    id: 'user-manager-1',
+    email: 'manager@example.com',
+    name: 'Alex Manager',
+    role: 'artist_manager',
+    password: 'password123',
+    profile: {
+      first_name: 'Alex',
+      last_name: 'Manager',
+      email: 'manager@example.com',
+    },
+  },
+  {
+    id: 'user-manager-2',
+    email: 'manager2@example.com',
+    name: 'Blake Robertson',
+    role: 'artist_manager',
+    password: 'password123',
+    profile: {
+      first_name: 'Blake',
+      last_name: 'Robertson',
+      email: 'manager2@example.com',
+    },
+  },
+  {
+    id: 'user-manager-3',
+    email: 'manager3@example.com',
+    name: 'Casey Johnson',
+    role: 'artist_manager',
+    password: 'password123',
+    profile: {
+      first_name: 'Casey',
+      last_name: 'Johnson',
+      email: 'manager3@example.com',
+    },
+  },
+  {
+    id: 'user-manager-4',
+    email: 'manager4@example.com',
+    name: 'Dana Lee',
+    role: 'artist_manager',
+    password: 'password123',
+    profile: {
+      first_name: 'Dana',
+      last_name: 'Lee',
+      email: 'manager4@example.com',
+    },
+  },
+  {
+    id: 'user-manager-5',
+    email: 'manager5@example.com',
+    name: 'Eric Martinez',
+    role: 'artist_manager',
+    password: 'password123',
+    profile: {
+      first_name: 'Eric',
+      last_name: 'Martinez',
+      email: 'manager5@example.com',
+    },
+  },
+  {
+    id: 'user-manager-6',
+    email: 'manager6@example.com',
+    name: 'Fiona Brown',
+    role: 'artist_manager',
+    password: 'password123',
+    profile: {
+      first_name: 'Fiona',
+      last_name: 'Brown',
+      email: 'manager6@example.com',
+    },
   },
 ];

@@ -24,10 +24,16 @@ export interface User {
 export interface Artist {
     id: string;
     email: string;
-    name: string;
-    first_release_year: number;
-    no_of_albums_released: number;
+    name?: string;
+    displayName: string;
+    first_release_year?: number;
+    firstReleaseYear: number;
+    no_of_albums_released?: number;
+    albumsReleased: number;
+    status: 'active' | 'pending' | 'inactive';
     createdAt: string;
+    managerId?: string;
+    managerName?: string;
 }
 
 export interface MusicTrack {
@@ -37,6 +43,20 @@ export interface MusicTrack {
     genre: 'rnb' | 'country' | 'classic' | 'rock' | 'jazz';
     createdAt: string;
     artist_id: string;
+}
+
+export interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+}
+
+export interface PaginatedResponse<T> {
+    rows: T[];
+    pagination: Pagination;
 }
 
 export interface AuthContextType {

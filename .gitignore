@@ -10,6 +10,11 @@
 !.yarn/releases
 !.yarn/versions
 
+/app/(pages)/(dashboard)/artist
+/app/(pages)/(dashboard)/manager
+
+
+
 # testing
 /coverage
 

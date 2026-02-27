@@ -3,7 +3,7 @@ import { UserRole } from '@/lib/types';
 export function getDashboardRoute(role: UserRole): string {
     switch (role) {
         case 'super_admin':
-            return '/dashboard';
+            return '/admin';
         case 'artist_manager':
             return '/manager';
         case 'artist':
@@ -13,7 +13,7 @@ export function getDashboardRoute(role: UserRole): string {
     }
 }
 export function hasAccessToRoute(role: UserRole, pathname: string): boolean {
-    if (pathname === '/dashboard') return role === 'super_admin';
+    if (pathname === '/admin') return role === 'super_admin';
     if (pathname === '/manager') return role === 'artist_manager';
     if (pathname === '/artist') return role === 'artist';
     return false;
