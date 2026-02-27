@@ -52,13 +52,13 @@ export default function ArtistsPage() {
       const transformedArtists = data.artists.map((artist: any) => ({
         id: artist.id,
         email: artist.email,
-        displayName: artist.name,
+        displayName: artist.name === " " ? "Not Activated" : artist.name,
         firstReleaseYear: artist.first_release_year || 0,
         albumsReleased: artist.no_of_albums_released || 0,
         status: artist.is_active ? 'active' : 'pending',
         createdAt: new Date().toISOString(),
-        managerId: undefined,
-        managerName: undefined,
+        managerId: artist.artist_manager_id,
+        managerName: artist.manager_name,
       }));
 
       setArtists(transformedArtists);

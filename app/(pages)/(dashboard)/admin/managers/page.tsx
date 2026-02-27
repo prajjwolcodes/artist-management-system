@@ -49,7 +49,7 @@ export default function ManagersPage() {
         .map((manager: any) => ({
           id: manager.id,
           email: manager.email,
-          name: `${manager.first_name || ''} ${manager.last_name || ''}`.trim(),
+          name: `${manager.first_name || 'Not'} ${manager.last_name || 'Activated'}`.trim(),
           role: manager.role,
           profile: {
             firstName: manager.first_name,
@@ -80,13 +80,13 @@ export default function ManagersPage() {
       manager.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleCreateManager = async (newManager: (typeof managers)[0]) => {
+  const handleCreateManager = async (email: string) => {
     try {
       const response = await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: newManager.email,
+          email,
           role: 'artist_manager',
         }),
       });
@@ -113,15 +113,16 @@ export default function ManagersPage() {
         method: 'DELETE',
       });
 
-      if (!response.ok) throw new Error('Failed to delete manager');
+      console.log(response)
+      if (!response.ok) throw new Error(response.status === 409 ? 'Cannot delete manager assigned to artists.' : 'Failed to delete manager');
 
       toast.success('Manager deleted successfully');
 
       // Refresh the managers list
       fetchManagers();
     } catch (error) {
-      toast.error('Failed to delete manager');
-      console.error(error);
+      toast.error(error instanceof Error ? error.message : 'Failed to delete manager');
+      console.log(error);
     }
   };
 

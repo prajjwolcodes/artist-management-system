@@ -74,6 +74,7 @@ export default function AdminDashboard() {
       const artistsList = artistsData.artists || [];
       setArtists(artistsList.slice(0, 5));
 
+
       // Calculate stats
       const activeCount = artistsList.filter((a: Artist) => a.is_active).length;
       const pendingCount = artistsList.filter((a: Artist) => !a.is_active).length;
@@ -252,7 +253,7 @@ export default function AdminDashboard() {
                 ) : (
                   recentArtists.map((artist) => (
                     <TableRow key={artist.id}>
-                      <TableCell className="font-medium">{artist.name}</TableCell>
+                      <TableCell className="font-medium">{artist.name === " " ? "Not Activated" : artist.name}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {artist.email}
                       </TableCell>

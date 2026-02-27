@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
 
         await client.query("COMMIT");
 
-        const activationLink = `${process.env.NEXT_PUBLIC_APP_URL}/activate?token=${token}`;
+        const activationLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/activate?token=${token}`;
         await sendActivationEmail(email, activationLink);
 
         return NextResponse.json({
@@ -135,7 +135,7 @@ export async function GET(req: NextRequest) {
 
         // Get paginated artists
         const artists = await pool.query(
-            `SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, u.gender, u.dob, u.address, a.first_release_year, a.no_of_albums_released 
+            `SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, u.gender, u.dob, u.address, a.first_release_year, a.no_of_albums_released, u.is_active , a.artist_manager_id, a.id as artist_id, (SELECT CONCAT(first_name, ' ', last_name) FROM users WHERE id = a.artist_manager_id) as manager_name
              FROM users u 
              JOIN artists a ON u.id = a.user_id 
              ${whereClause}

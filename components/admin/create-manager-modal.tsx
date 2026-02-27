@@ -13,27 +13,18 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { User } from '@/lib/types';
 import { toast } from 'sonner';
 
-const createManagerSchema = z
-  .object({
-    displayName: z.string().min(2, 'Name must be at least 2 characters'),
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(6, 'Password must be at least 6 characters'),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'],
-  });
+const createManagerSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
 
 type CreateManagerFormData = z.infer<typeof createManagerSchema>;
 
 interface CreateManagerModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onCreateManager: (manager: User & { password: string }) => void;
+  onCreateManager: (email: string) => void;
 }
 
 export function CreateManagerModal({
@@ -54,26 +45,7 @@ export function CreateManagerModal({
   const onSubmit = async (data: CreateManagerFormData) => {
     setIsLoading(true);
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const [firstName, ...lastNameParts] = data.displayName.split(' ');
-      const lastName = lastNameParts.join(' ') || '';
-
-      const newManager: User & { password: string } = {
-        id: `user-manager-${Date.now()}`,
-        email: data.email,
-        name: data.displayName,
-        role: 'manager',
-        password: data.password,
-        profile: {
-          firstName,
-          lastName,
-          email: data.email,
-        },
-      };
-
-      onCreateManager(newManager);
+      await onCreateManager(data.email);
       reset();
     } catch (error) {
       toast.error('Failed to create manager');
@@ -89,23 +61,11 @@ export function CreateManagerModal({
         <DialogHeader>
           <DialogTitle>Create Manager</DialogTitle>
           <DialogDescription>
-            Add a new artist manager to the system
+            Send an invite link to create a manager account
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div>
-            <label className="text-sm font-medium">Display Name</label>
-            <Input
-              placeholder="John Doe"
-              {...register('displayName')}
-              className="mt-1"
-            />
-            {errors.displayName && (
-              <p className="mt-1 text-sm text-destructive">{errors.displayName.message}</p>
-            )}
-          </div>
-
           <div>
             <label className="text-sm font-medium">Email</label>
             <Input
@@ -119,34 +79,6 @@ export function CreateManagerModal({
             )}
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Password</label>
-            <Input
-              type="password"
-              placeholder="••••••••"
-              {...register('password')}
-              className="mt-1"
-            />
-            {errors.password && (
-              <p className="mt-1 text-sm text-destructive">{errors.password.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="text-sm font-medium">Confirm Password</label>
-            <Input
-              type="password"
-              placeholder="••••••••"
-              {...register('confirmPassword')}
-              className="mt-1"
-            />
-            {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-destructive">
-                {errors.confirmPassword.message}
-              </p>
-            )}
-          </div>
-
           <div className="flex gap-2 justify-end pt-4">
             <Button
               type="button"
@@ -157,7 +89,7 @@ export function CreateManagerModal({
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Creating...' : 'Create Manager'}
+              {isLoading ? 'Sending...' : 'Send Invite'}
             </Button>
           </div>
         </form>

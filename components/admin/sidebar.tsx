@@ -20,7 +20,6 @@ export function AdminSidebar() {
     { href: '/admin', label: 'Dashboard', icon: BarChart3 },
     { href: '/admin/managers', label: 'Managers', icon: Users },
     { href: '/admin/artists', label: 'Artists', icon: Users },
-    { href: '/admin/settings', label: 'Settings', icon: Settings },
   ];
 
   return (

@@ -69,26 +69,12 @@ export async function POST(req: NextRequest) {
             [hashedPassword, user.id, first_name, last_name, dob, address, gender, phone]
         );
 
-        const jwtToken = jwt.sign(
-            {
-                id: user.id,
-                role: user.role,
-            },
-            process.env.JWT_SECRET as string,
-            { expiresIn: "1d" }
-        );
+
 
         const response = NextResponse.json({
-            message: "Account activated successfully and logged in",
-            token: jwtToken,
+            message: "Account activated successfully, you can now log in",
         });
 
-        response.cookies.set("token", jwtToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax",
-            path: "/",
-        });
 
         return response;
 
