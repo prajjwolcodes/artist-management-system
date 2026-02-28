@@ -10,13 +10,20 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { MusicTrack } from '@/lib/types';
 import { toast } from 'sonner';
 
 interface AddMusicModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (track: Omit<MusicTrack, 'id' | 'artistId'>) => void;
+  onSubmit: (track: Omit<MusicTrack, 'id' | 'artist_id'>) => void;
   editingTrack?: MusicTrack | null;
 }
 
@@ -28,8 +35,8 @@ export function AddMusicModal({
 }: AddMusicModalProps) {
   const [formData, setFormData] = useState({
     title: '',
-    album: '',
-    genre: '',
+    album_name: '',
+    genre: 'rock' as 'rnb' | 'country' | 'classic' | 'rock' | 'jazz',
     createdAt: new Date().toISOString().split('T')[0],
   });
 
@@ -37,15 +44,15 @@ export function AddMusicModal({
     if (editingTrack) {
       setFormData({
         title: editingTrack.title,
-        album: editingTrack.album,
+        album_name: editingTrack.album_name,
         genre: editingTrack.genre,
         createdAt: editingTrack.createdAt,
       });
     } else {
       setFormData({
         title: '',
-        album: '',
-        genre: '',
+        album_name: '',
+        genre: 'rock',
         createdAt: new Date().toISOString().split('T')[0],
       });
     }
@@ -54,76 +61,110 @@ export function AddMusicModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.album || !formData.genre) {
+    if (!formData.title || !formData.album_name || !formData.genre) {
       toast.error('Please fill in all fields');
       return;
     }
 
     onSubmit({
       title: formData.title,
-      album: formData.album,
-      genre: formData.genre,
+      album_name: formData.album_name,
+      genre: formData.genre as 'rnb' | 'country' | 'classic' | 'rock' | 'jazz',
       createdAt: formData.createdAt,
     });
 
     onOpenChange(false);
-    toast.success(editingTrack ? 'Track updated' : 'Track added');
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-125">
         <DialogHeader>
-          <DialogTitle>{editingTrack ? 'Edit Track' : 'Add New Track'}</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {editingTrack ? 'Edit Track' : 'Add New Track'}
+          </DialogTitle>
           <DialogDescription>
-            {editingTrack ? 'Update track information' : 'Add a new track to your music library'}
+            {editingTrack
+              ? 'Update your track information below'
+              : 'Create a new track in your music library'}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Title *</label>
+            <label className="text-sm font-medium text-foreground">
+              Track Title <span className="text-red-500">*</span>
+            </label>
             <Input
-              placeholder="Track title"
+              placeholder="Enter track title"
               value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               required
+              className="border-border"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Album *</label>
+            <label className="text-sm font-medium text-foreground">
+              Album Name <span className="text-red-500">*</span>
+            </label>
             <Input
-              placeholder="Album name"
-              value={formData.album}
-              onChange={(e) => setFormData({ ...formData, album: e.target.value })}
+              placeholder="Enter album name"
+              value={formData.album_name}
+              onChange={(e) =>
+                setFormData({ ...formData, album_name: e.target.value })
+              }
               required
+              className="border-border"
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Genre *</label>
-            <Input
-              placeholder="e.g., Pop, Rock, Jazz"
+            <label className="text-sm font-medium text-foreground">
+              Genre <span className="text-red-500">*</span>
+            </label>
+            <Select
               value={formData.genre}
-              onChange={(e) => setFormData({ ...formData, genre: e.target.value })}
-              required
-            />
+              onValueChange={(value) =>
+                setFormData({
+                  ...formData,
+                  genre: value as 'rnb' | 'country' | 'classic' | 'rock' | 'jazz',
+                })
+              }
+            >
+              <SelectTrigger className="border-border">
+                <SelectValue placeholder="Select a genre" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="rock">Rock</SelectItem>
+                <SelectItem value="rnb">R&B</SelectItem>
+                <SelectItem value="jazz">Jazz</SelectItem>
+                <SelectItem value="classic">Classical</SelectItem>
+                <SelectItem value="country">Country</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">Date</label>
+            <label className="text-sm font-medium text-foreground">
+              Release Date
+            </label>
             <Input
               type="date"
               value={formData.createdAt}
-              onChange={(e) => setFormData({ ...formData, createdAt: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, createdAt: e.target.value })
+              }
+              className="border-border"
             />
           </div>
 
           <div className="flex gap-3 pt-4">
             <Button
               type="submit"
-              className="flex-1 bg-primary hover:bg-primary/90"
+              className="flex-1 bg-primary hover:bg-primary/90 shadow-lg"
             >
               {editingTrack ? 'Update Track' : 'Add Track'}
             </Button>
