@@ -7,10 +7,9 @@ export async function POST(req: NextRequest) {
     const client = await pool.connect();
 
     try {
-        const { token, password, name, dob, gender, address, first_release_year, no_of_albums_released
+        const { token, password, name, dob, gender, address,
         } = await req.json();
 
-        console.log(token, password, name, dob, gender, address, first_release_year, no_of_albums_released);
 
         if (
             !token ||
@@ -120,8 +119,8 @@ export async function POST(req: NextRequest) {
                 dob,
                 gender,
                 address,
-                Number(first_release_year) || null,
-                Number(no_of_albums_released) || 0,
+                0, // Assuming new artists start with 0 albums released
+                0, // No albums released initially
                 user.id
             ]
         );

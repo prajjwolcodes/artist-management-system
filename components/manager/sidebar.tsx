@@ -17,6 +17,11 @@ const navItems = [
     icon: Users,
   },
   {
+    label: 'Music',
+    href: '/manager/music',
+    icon: Music,
+  },
+  {
     label: 'Create Artist',
     href: '/manager/create',
     icon: Plus,
