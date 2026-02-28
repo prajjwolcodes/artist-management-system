@@ -21,11 +21,6 @@ const navItems = [
     href: '/manager/create',
     icon: Plus,
   },
-  {
-    label: 'Settings',
-    href: '/manager/settings',
-    icon: Settings,
-  },
 ];
 
 export function ManagerSidebar() {

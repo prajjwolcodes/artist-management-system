@@ -7,22 +7,22 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { mockArtists } from '@/lib/mock-data';
 
-export function ManagerRecentTable() {
-  const recentArtists = mockArtists.slice(0, 5);
+interface RecentArtist {
+  id: string;
+  name: string;
+  email: string;
+  no_of_albums_released: number | null;
+  is_active: boolean;
+  created_at: string;
+}
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-500/10 text-green-700 dark:text-green-400';
-      case 'pending':
-        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400';
-      case 'inactive':
-        return 'bg-gray-500/10 text-gray-700 dark:text-gray-400';
-      default:
-        return '';
+export function ManagerRecentTable({ artists }: { artists: RecentArtist[] }) {
+  const getStatusColor = (isActive: boolean) => {
+    if (isActive) {
+      return 'bg-green-500/10 text-green-700 dark:text-green-400';
     }
+    return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400';
   };
 
   return (
@@ -38,17 +38,19 @@ export function ManagerRecentTable() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {recentArtists.map((artist) => (
+          {artists.map((artist) => (
             <TableRow key={artist.id} className="border-b border-border hover:bg-accent/50">
-              <TableCell className="font-medium">{artist.displayName}</TableCell>
+              <TableCell className="font-medium">{artist.name || 'N/A'}</TableCell>
               <TableCell className="text-muted-foreground text-sm">{artist.email}</TableCell>
-              <TableCell>{artist.albumsReleased}</TableCell>
+              <TableCell>{artist.no_of_albums_released ?? 0}</TableCell>
               <TableCell>
-                <Badge className={getStatusColor(artist.status)} variant="outline">
-                  {artist.status.charAt(0).toUpperCase() + artist.status.slice(1)}
+                <Badge className={getStatusColor(artist.is_active)} variant="outline">
+                  {artist.is_active ? 'Active' : 'Pending'}
                 </Badge>
               </TableCell>
-              <TableCell className="text-muted-foreground text-sm">{artist.createdAt}</TableCell>
+              <TableCell className="text-muted-foreground text-sm">
+                {new Date(artist.created_at).toLocaleDateString()}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

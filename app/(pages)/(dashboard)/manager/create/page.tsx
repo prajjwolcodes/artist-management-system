@@ -22,12 +22,27 @@ export default function CreateArtistPage() {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      toast.success('Artist created successfully');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/artist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          name: formData.displayName,
+        }),
+      });
+
+      const data = (await res.json()) as { message?: string; error?: string };
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to create artist');
+      }
+
+      toast.success(data.message || 'Artist created successfully. Invitation email sent.');
       router.push('/manager/artists');
     } catch (error) {
-      toast.error('Failed to create artist');
+      toast.error(error instanceof Error ? error.message : 'Failed to create artist');
     } finally {
       setIsLoading(false);
     }
@@ -38,14 +53,14 @@ export default function CreateArtistPage() {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">Create Artist</h1>
-        <p className="text-muted-foreground mt-2">Add a new artist to your roster</p>
+        <p className="text-muted-foreground mt-2">Invite a new artist and send activation link by email</p>
       </div>
 
       {/* Form Card */}
       <Card className="bg-card border border-border">
         <CardHeader>
-          <CardTitle>Artist Information</CardTitle>
-          <CardDescription>Enter basic information about the artist</CardDescription>
+          <CardTitle>Artist Invitation</CardTitle>
+          <CardDescription>Enter artist name and email to send invite link</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -82,7 +97,7 @@ export default function CreateArtistPage() {
                 disabled={isLoading}
                 className="bg-primary hover:bg-primary/90"
               >
-                {isLoading ? 'Creating...' : 'Create Artist'}
+                {isLoading ? 'Sending Invite...' : 'Send Invite'}
               </Button>
               <Button
                 type="button"

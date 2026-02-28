@@ -4,6 +4,8 @@ import { authorize } from "@/helpers/authorize";
 import { sendActivationEmail } from "@/lib/mail";
 import crypto from "crypto";
 
+
+// create artist
 export async function POST(req: NextRequest) {
     const client = await pool.connect();
 
@@ -80,7 +82,7 @@ export async function POST(req: NextRequest) {
 
         await client.query("COMMIT");
 
-        const activationLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/activate?token=${token}`;
+        const activationLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/activate/artist?token=${token}`;
         await sendActivationEmail(email, activationLink);
 
         return NextResponse.json({
@@ -135,10 +137,26 @@ export async function GET(req: NextRequest) {
 
         // Get paginated artists
         const artists = await pool.query(
-            `SELECT u.id, CONCAT(u.first_name, ' ', u.last_name) as name, u.email, u.gender, u.dob, u.address, a.first_release_year, a.no_of_albums_released, u.is_active , a.artist_manager_id, a.id as artist_id, (SELECT CONCAT(first_name, ' ', last_name) FROM users WHERE id = a.artist_manager_id) as manager_name
+            `SELECT 
+                u.id,
+                CONCAT(u.first_name, ' ', u.last_name) as name,
+                u.email,
+                u.gender,
+                u.dob,
+                u.address,
+                a.first_release_year,
+                a.no_of_albums_released,
+                u.is_active,
+                a.artist_manager_id,
+                a.id as artist_id,
+                (SELECT CONCAT(first_name, ' ', last_name) FROM users WHERE id = a.artist_manager_id) as manager_name,
+                u.created_at,
+                COALESCE(COUNT(m.id), 0) as music_count
              FROM users u 
-             JOIN artists a ON u.id = a.user_id 
+             JOIN artists a ON u.id = a.user_id
+             LEFT JOIN music m ON m.artist_id = a.user_id
              ${whereClause}
+             GROUP BY u.id, a.id
              ORDER BY u.created_at DESC
              LIMIT $${queryParams.length + 1} OFFSET $${queryParams.length + 2}`,
             [...queryParams, limit, offset]

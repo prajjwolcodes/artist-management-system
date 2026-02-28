@@ -1,6 +1,6 @@
 'use client';
 
-import { Artist } from '@/lib/types';
+import { Badge } from '@/components/ui/badge';
 import {
   Table,
   TableBody,
@@ -9,13 +9,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { Artist } from '@/lib/types';
 
 interface ArtistTableProps {
   artists: Artist[];
 }
 
 export function ArtistTable({ artists }: ArtistTableProps) {
+  console.log(artists)
   const getStatusColor = (status: Artist['status']) => {
     switch (status) {
       case 'active':
@@ -62,12 +63,14 @@ export function ArtistTable({ artists }: ArtistTableProps) {
                     <span className="text-muted-foreground italic">Unassigned</span>
                   )}
                 </TableCell>
-                <TableCell>{artist.firstReleaseYear}</TableCell>
-                <TableCell className="text-center">{artist.albumsReleased}</TableCell>
+                <TableCell>{artist.first_release_year}</TableCell>
+                <TableCell className="text-center">{artist.no_of_albums_released}</TableCell>
                 <TableCell>
                   <Badge className={getStatusColor(artist.status)}>
                     {artist.status.charAt(0).toUpperCase() + artist.status.slice(1)}
+
                   </Badge>
+                  {/* {artist.status  === 'pending' && <Button variant="outline" size="xs" className="ml-2" onClick={() => sendActivationEmail(artist.email,token)}>Activate</Button>} */}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
                   {new Date(artist.createdAt).toLocaleDateString()}

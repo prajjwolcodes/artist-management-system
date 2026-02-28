@@ -53,12 +53,12 @@ export default function ArtistsPage() {
         id: artist.id,
         email: artist.email,
         displayName: artist.name === " " ? "Not Activated" : artist.name,
-        firstReleaseYear: artist.first_release_year || 0,
-        albumsReleased: artist.no_of_albums_released || 0,
+        first_release_year: artist.first_release_year || 0,
+        no_of_albums_released: artist.no_of_albums_released || 0,
         status: artist.is_active ? 'active' : 'pending',
         createdAt: new Date().toISOString(),
-        managerId: artist.artist_manager_id,
-        managerName: artist.manager_name,
+        artist_manager_id: artist.artist_manager_id,
+        manager_name: artist.manager_name,
       }));
 
       setArtists(transformedArtists);

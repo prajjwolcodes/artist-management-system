@@ -52,8 +52,8 @@ export default function ManagersPage() {
           name: `${manager.first_name || 'Not'} ${manager.last_name || 'Activated'}`.trim(),
           role: manager.role,
           profile: {
-            firstName: manager.first_name,
-            lastName: manager.last_name,
+            first_name: manager.first_name,
+            last_name: manager.last_name,
             email: manager.email,
           },
         }));

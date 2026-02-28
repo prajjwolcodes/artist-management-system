@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
             [email, role, token, expires]
         );
 
-        const activationLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/activate?token=${token}`;
+        const activationLink = `${process.env.NEXT_PUBLIC_API_BASE_URL}/manager/activate?token=${token}`;
 
         await sendActivationEmail(email, activationLink);
 

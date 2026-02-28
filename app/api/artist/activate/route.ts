@@ -10,6 +10,8 @@ export async function POST(req: NextRequest) {
         const { token, password, name, dob, gender, address, first_release_year, no_of_albums_released
         } = await req.json();
 
+        console.log(token, password, name, dob, gender, address, first_release_year, no_of_albums_released);
+
         if (
             !token ||
             !password ||
@@ -65,6 +67,10 @@ export async function POST(req: NextRequest) {
 
         // 2️⃣ Hash password
         const hashedPassword = await bcrypt.hash(password, 12);
+        const firstname = name.split(" ")[0];
+        const lastname = name.split(" ").slice(1).join(" ");
+
+        console.log("names", firstname, lastname)
 
         // 3️⃣ Update users table
         await client.query(
@@ -85,8 +91,8 @@ export async function POST(req: NextRequest) {
       WHERE id = $7
       `,
             [
-                name.split(" ")[0],
-                name.split(" ").slice(1).join(" "),
+                firstname,
+                lastname,
                 hashedPassword,
                 dob,
                 gender,
@@ -114,37 +120,14 @@ export async function POST(req: NextRequest) {
                 dob,
                 gender,
                 address,
-                first_release_year || null,
-                no_of_albums_released || 0,
+                Number(first_release_year) || null,
+                Number(no_of_albums_released) || 0,
                 user.id
             ]
         );
 
-        const jwtToken = jwt.sign(
-            {
-                id: user.id,
-                role: user.role,
-            },
-            process.env.JWT_SECRET as string,
-            { expiresIn: "1d" }
-        );
-
         await client.query("COMMIT");
-
-
-        const response = NextResponse.json({
-            message: "Account activated successfully and logged in",
-            token: jwtToken,
-        });
-
-        response.cookies.set("token", jwtToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax",
-            path: "/",
-        });
-
-        return response;
+        return NextResponse.json({ message: "Account activated successfully, you can now log in." }, { status: 200 });
     } catch (error) {
         await client.query("ROLLBACK");
         console.error(error);

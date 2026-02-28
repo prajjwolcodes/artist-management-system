@@ -7,7 +7,7 @@ import { TopNavbar } from '@/components/navigation/top-navbar';
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { currentUser } = useAuth();
-  const isManager = currentUser?.role === 'manager';
+  const isManager = currentUser?.role === 'artist_manager';
 
   return (
     <div className="min-h-screen bg-background">

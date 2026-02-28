@@ -15,10 +15,36 @@ export default function DashboardRouteLayout({
   const pathname = usePathname();
 
   useEffect(() => {
+    // Redirect to login if not authenticated
     if (!isLoading && !isAuthenticated) {
       router.push('/login');
+      return;
     }
-  }, [isAuthenticated, isLoading, router]);
+
+    // Role-based access control
+    if (!isLoading && isAuthenticated && currentUser) {
+      const userRole = currentUser.role;
+
+      // Determine the correct dashboard path for the user's role
+      let correctPath = '/';
+      if (userRole === 'artist') {
+        correctPath = '/artist';
+      } else if (userRole === 'artist_manager') {
+        correctPath = '/manager';
+      } else if (userRole === 'super_admin') {
+        correctPath = '/admin';
+      }
+
+      // Check if user is trying to access a different role's dashboard
+      if (pathname.startsWith('/artist') && userRole !== 'artist') {
+        router.push(correctPath);
+      } else if (pathname.startsWith('/manager') && userRole !== 'artist_manager') {
+        router.push(correctPath);
+      } else if (pathname.startsWith('/admin') && userRole !== 'super_admin') {
+        router.push(correctPath);
+      }
+    }
+  }, [isAuthenticated, isLoading, currentUser, pathname, router]);
 
   if (isLoading || !isAuthenticated) {
     return (

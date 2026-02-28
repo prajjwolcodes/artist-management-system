@@ -11,6 +11,8 @@ export interface UserProfile {
     address?: string;
     phone?: string;
     confirmPassword?: string;
+    first_release_year?: number;
+    no_of_albums_released?: number;
 }
 
 export interface User {
@@ -27,9 +29,7 @@ export interface Artist {
     name?: string;
     displayName: string;
     first_release_year?: number;
-    firstReleaseYear: number;
     no_of_albums_released?: number;
-    albumsReleased: number;
     status: 'active' | 'pending' | 'inactive';
     createdAt: string;
     managerId?: string;

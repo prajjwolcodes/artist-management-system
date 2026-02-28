@@ -22,22 +22,22 @@ export default function ArtistProfilePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<UserProfile>(
     currentUser?.profile || {
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       email: '',
-      dateOfBirth: '',
+      dob: '',
       gender: undefined,
       address: '',
-      firstReleaseYear: undefined,
-      numberOfAlbums: undefined,
+      first_release_year: undefined,
+      no_of_albums_released: undefined,
     }
   );
 
   const isProfileIncomplete =
-    !formData.firstName ||
-    !formData.lastName ||
+    !formData.first_name ||
+    !formData.last_name ||
     !formData.email ||
-    !formData.dateOfBirth ||
+    !formData.dob ||
     !formData.gender ||
     !formData.address;
 
@@ -98,8 +98,8 @@ export default function ArtistProfilePage() {
                 <label className="text-sm font-medium">First Name *</label>
                 <Input
                   placeholder="John"
-                  value={formData.firstName}
-                  onChange={(e) => handleInputChange('firstName', e.target.value)}
+                  value={formData.first_name}
+                  onChange={(e) => handleInputChange('first_name', e.target.value)}
                   required
                 />
               </div>
@@ -107,8 +107,8 @@ export default function ArtistProfilePage() {
                 <label className="text-sm font-medium">Last Name *</label>
                 <Input
                   placeholder="Doe"
-                  value={formData.lastName}
-                  onChange={(e) => handleInputChange('lastName', e.target.value)}
+                  value={formData.last_name}
+                  onChange={(e) => handleInputChange('last_name', e.target.value)}
                   required
                 />
               </div>
@@ -129,8 +129,8 @@ export default function ArtistProfilePage() {
               <label className="text-sm font-medium">Date of Birth *</label>
               <Input
                 type="date"
-                value={formData.dateOfBirth || ''}
-                onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
+                value={formData.dob || ''}
+                onChange={(e) => handleInputChange('dob', e.target.value)}
                 required
               />
             </div>
@@ -169,9 +169,9 @@ export default function ArtistProfilePage() {
                 <Input
                   type="number"
                   placeholder="2020"
-                  value={formData.firstReleaseYear || ''}
+                  value={formData.first_release_year || ''}
                   onChange={(e) =>
-                    handleInputChange('firstReleaseYear', e.target.value ? parseInt(e.target.value) : undefined)
+                    handleInputChange('first_release_year', e.target.value ? parseInt(e.target.value) : undefined)
                   }
                 />
               </div>
@@ -180,9 +180,9 @@ export default function ArtistProfilePage() {
                 <Input
                   type="number"
                   placeholder="3"
-                  value={formData.numberOfAlbums || ''}
+                  value={formData.no_of_albums_released || ''}
                   onChange={(e) =>
-                    handleInputChange('numberOfAlbums', e.target.value ? parseInt(e.target.value) : undefined)
+                    handleInputChange('no_of_albums_released', e.target.value ? parseInt(e.target.value) : undefined)
                   }
                 />
               </div>

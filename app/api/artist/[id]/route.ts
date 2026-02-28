@@ -41,14 +41,29 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
             return NextResponse.json({ error: "Artist ID is required" }, { status: 400 });
         }
 
-        if (id === user.id) {
-            return NextResponse.json({ error: "You must be his artist_manager to delete an artist" }, { status: 403 });
+        const artist = await pool.query(
+            `SELECT u.id
+             FROM users u
+             JOIN artists a ON a.user_id = u.id
+             WHERE u.id = $1 AND u.role = 'artist' AND a.artist_manager_id = $2`,
+            [id, user.id]
+        );
+        if (artist.rows.length === 0) {
+            return NextResponse.json({ error: "Artist not found or access denied" }, { status: 404 });
         }
 
-        const artist = await pool.query(`SELECT id FROM users WHERE id = $1 AND role = 'artist'`, [id]);
-        if (artist.rows.length === 0) {
-            return NextResponse.json({ error: "Artist not found" }, { status: 404 });
+        const musicCountResult = await pool.query(
+            `SELECT COUNT(*)::int AS total FROM music WHERE artist_id = $1`,
+            [id]
+        );
+
+        if (musicCountResult.rows[0].total > 0) {
+            return NextResponse.json(
+                { error: "Cannot delete artist with existing music" },
+                { status: 400 }
+            );
         }
+
         await pool.query(`DELETE FROM users WHERE id = $1 AND role = 'artist'`, [id]);
         return NextResponse.json({ message: "Artist deleted successfully" });
     } catch (error) {

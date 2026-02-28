@@ -1,13 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Input } from '@/components/ui/input';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { Search, Trash2, Eye, Edit2 } from 'lucide-react';
+import { Trash2, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
-import { mockArtists } from '@/lib/mock-data';
 import { toast } from 'sonner';
 import {
   Table,
@@ -17,46 +15,146 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+
+interface ArtistRow {
+  id: string;
+  artist_id: string;
+  name: string;
+  email: string;
+  first_release_year: number | null;
+  no_of_albums_released: number | null;
+  is_active: boolean;
+  created_at: string;
+  music_count: number | string;
+}
+
+interface PaginationResponse {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+interface ArtistsApiResponse {
+  artists: ArtistRow[];
+  pagination: PaginationResponse;
+}
 
 export default function ArtistsPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [artists, setArtists] = useState(mockArtists);
+  const [artists, setArtists] = useState<ArtistRow[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [isResending, setIsResending] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<PaginationResponse>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 1,
+    hasNextPage: false,
+    hasPrevPage: false,
+  });
 
-  const filteredArtists = useMemo(() => {
-    return artists.filter((artist) => {
-      const matchesSearch =
-        artist.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        artist.email.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = statusFilter === 'all' || artist.status === statusFilter;
-      return matchesSearch && matchesStatus;
-    });
-  }, [searchTerm, statusFilter, artists]);
+  const fetchArtists = async (targetPage: number) => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/artist?page=${targetPage}&limit=${pagination.limit}`
+      );
 
-  const handleDelete = (id: string) => {
-    setArtists(artists.filter((a) => a.id !== id));
-    toast.success('Artist deleted successfully');
+      const data = (await res.json()) as ArtistsApiResponse | { error: string };
+
+      if (!res.ok || !('artists' in data)) {
+        throw new Error('error' in data ? data.error : 'Failed to fetch artists');
+      }
+
+      setArtists(data.artists);
+      setPagination(data.pagination);
+      setPage(targetPage);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to fetch artists');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const getStatusColor = (status: string) => {
+  useEffect(() => {
+    fetchArtists(1);
+  }, []);
+
+  const handleDeleteArtist = async (artist: ArtistRow) => {
+    const musicCount = Number(artist.music_count || 0);
+    if (musicCount > 0) {
+      toast.error('Cannot delete artist who has music');
+      return;
+    }
+
+    setIsDeleting(artist.id);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/artist/${artist.id}`, {
+        method: 'DELETE',
+      });
+
+      const data = (await res.json()) as { message?: string; error?: string };
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to delete artist');
+      }
+
+      toast.success(data.message || 'Artist deleted successfully');
+
+      const isLastItemOnPage = artists.length === 1;
+      const newPage = isLastItemOnPage && page > 1 ? page - 1 : page;
+      await fetchArtists(newPage);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to delete artist');
+    } finally {
+      setIsDeleting(null);
+    }
+  };
+
+  const handleResendActivation = async (artist: ArtistRow) => {
+    setIsResending(artist.id);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/artist/resend-activation`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: artist.email }),
+      });
+
+      const data = (await res.json()) as { message?: string; error?: string };
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to resend activation link');
+      }
+
+      toast.success(data.message || 'Activation link sent successfully');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to resend activation link');
+    } finally {
+      setIsResending(null);
+    }
+  };
+
+  const getStatusColor = (isActive: boolean) => {
+    const status = isActive ? 'active' : 'pending';
+
     switch (status) {
       case 'active':
         return 'bg-green-500/10 text-green-700 dark:text-green-400';
       case 'pending':
         return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400';
-      case 'inactive':
-        return 'bg-gray-500/10 text-gray-700 dark:text-gray-400';
       default:
         return '';
     }
   };
+
+  const pageArtists = useMemo(() => artists, [artists]);
 
   return (
     <div className="space-y-8">
@@ -67,38 +165,22 @@ export default function ArtistsPage() {
           <p className="text-muted-foreground mt-2">Manage all your artists in one place</p>
         </div>
         <Button asChild className="bg-primary hover:bg-primary/90">
-          <Link href="/manager/create">Add Artist</Link>
+          <Link href="/manager/create">Invite Artist</Link>
         </Button>
       </div>
 
-      {/* Filters */}
-      <Card className="p-4 bg-card border border-border space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-3 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search artists..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-full sm:w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="inactive">Inactive</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <Card className="p-4 bg-card border border-border">
+        <p className="text-sm text-muted-foreground">
+          Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} total artists)
+        </p>
       </Card>
 
       {/* Table */}
-      {filteredArtists.length > 0 ? (
+      {isLoading ? (
+        <Card className="p-12 bg-card border border-border text-center">
+          <p className="text-muted-foreground">Loading artists...</p>
+        </Card>
+      ) : pageArtists.length > 0 ? (
         <div className="border border-border rounded-lg bg-card overflow-hidden">
           <Table>
             <TableHeader>
@@ -107,49 +189,64 @@ export default function ArtistsPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>First Release</TableHead>
                 <TableHead>Albums</TableHead>
+                <TableHead>Music</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredArtists.map((artist) => (
+              {pageArtists.map((artist) => (
                 <TableRow key={artist.id} className="border-b border-border hover:bg-accent/50">
-                  <TableCell className="font-medium">{artist.displayName}</TableCell>
+                  <TableCell className="font-medium">{artist.name || 'N/A'}</TableCell>
                   <TableCell className="text-muted-foreground text-sm">{artist.email}</TableCell>
-                  <TableCell>{artist.firstReleaseYear}</TableCell>
-                  <TableCell>{artist.albumsReleased}</TableCell>
+                  <TableCell>{artist.first_release_year ?? '-'}</TableCell>
+                  <TableCell>{artist.no_of_albums_released ?? 0}</TableCell>
+                  <TableCell>{Number(artist.music_count || 0)}</TableCell>
                   <TableCell>
-                    <Badge className={getStatusColor(artist.status)} variant="outline">
-                      {artist.status.charAt(0).toUpperCase() + artist.status.slice(1)}
+                    <Badge className={getStatusColor(artist.is_active)} variant="outline">
+                      {artist.is_active ? 'Active' : 'Pending'}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        title="View"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0"
-                        title="Edit"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
-                        onClick={() => handleDelete(artist.id)}
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                    <div className="flex gap-2 justify-between">
+                      {!artist.is_active && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 px-2 text-xs"
+                          disabled={isResending === artist.id}
+                          onClick={() => handleResendActivation(artist)}
+                          title="Resend activation link"
+                        >
+                          <RefreshCw className="w-4 h-4 mr-1" />
+                          {isResending === artist.id ? 'Sending...' : 'Resend'}
+                        </Button>
+                      )}
+
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogTitle>Delete Artist</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete {artist.name}? This action cannot be
+                            undone.
+                          </AlertDialogDescription>
+                          <div className="flex gap-2 justify-end">
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteArtist(artist)}
+                              className="bg-destructive text-destructive-foreground"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </div>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -162,6 +259,23 @@ export default function ArtistsPage() {
           <p className="text-muted-foreground">No artists found. Try adjusting your filters.</p>
         </Card>
       )}
+
+      <div className="flex items-center justify-end gap-3">
+        <Button
+          variant="outline"
+          disabled={isLoading || !pagination.hasPrevPage}
+          onClick={() => fetchArtists(page - 1)}
+        >
+          Previous
+        </Button>
+        <Button
+          variant="outline"
+          disabled={isLoading || !pagination.hasNextPage}
+          onClick={() => fetchArtists(page + 1)}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 }

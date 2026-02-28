@@ -5,7 +5,7 @@ export default function ArtistDashboard() {
   // Mock data - in real app would come from auth context
   const totalAlbums = 3;
   const totalTracks = 12;
-  const firstReleaseYear = 2018;
+  const first_release_year = 2018;
 
   return (
     <div className="space-y-8">
@@ -32,7 +32,7 @@ export default function ArtistDashboard() {
         <ArtistStatCard
           icon={Calendar}
           label="First Release"
-          value={firstReleaseYear}
+          value={first_release_year}
           description="Years active"
         />
       </div>
@@ -44,7 +44,7 @@ export default function ArtistDashboard() {
           <div className="space-y-3 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Active Since</span>
-              <span className="font-medium">{firstReleaseYear}</span>
+              <span className="font-medium">{first_release_year}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Albums</span>
