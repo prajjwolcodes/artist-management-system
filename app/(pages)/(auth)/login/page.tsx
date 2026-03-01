@@ -50,13 +50,13 @@ export default function LoginPage() {
                 {/* Logo */}
                 <div className="flex items-center justify-center gap-2">
                     <Music className="w-8 h-8 text-primary" />
-                    <h1 className="text-2xl font-bold">MusicHub</h1>
+                    <h1 className="text-3xl font-bold">Cloco Music</h1>
                 </div>
 
                 {/* Card */}
                 <Card className="border border-border bg-card">
                     <CardHeader>
-                        <CardTitle>Sign In</CardTitle>
+                        <CardTitle className='text-lg'>Sign In with your account</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">

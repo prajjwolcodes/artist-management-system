@@ -36,7 +36,7 @@ export function ManagerSidebar() {
       {/* Logo */}
       <Link href="/manager" className="flex items-center gap-2 mb-8">
         <Music className="w-6 h-6 text-primary" />
-        <span className="font-bold text-lg">MusicHub</span>
+        <span className="font-bold text-lg">Cloco Music</span>
       </Link>
 
       {/* Navigation */}

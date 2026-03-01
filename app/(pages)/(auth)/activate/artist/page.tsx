@@ -21,8 +21,6 @@ interface ActivateFormState {
     dob: string;
     gender: 'm' | 'f' | 'o' | '';
     address: string;
-    first_release_year: string;
-    no_of_albums_released: string;
     password: string;
     confirmPassword: string;
 }
@@ -39,8 +37,6 @@ export default function ActivateAccountPage() {
         dob: "",
         gender: '',
         address: "",
-        first_release_year: "",
-        no_of_albums_released: "",
         password: '',
         confirmPassword: '',
     });
@@ -56,8 +52,6 @@ export default function ActivateAccountPage() {
         e.preventDefault();
         logout(); // Ensure any existing session is cleared before activation
 
-        console.log(formData)
-
         if (!token) {
             toast.error('Invalid or missing activation token');
             return;
@@ -67,9 +61,7 @@ export default function ActivateAccountPage() {
             !formData.name ||
             !formData.dob ||
             !formData.gender ||
-            !formData.address ||
-            !formData.first_release_year ||
-            !formData.no_of_albums_released
+            !formData.address
 
         ) {
             toast.error('Please fill in all required fields');
@@ -97,8 +89,6 @@ export default function ActivateAccountPage() {
                     dob: formData.dob,
                     gender: formData.gender,
                     address: formData.address,
-                    first_release_year: formData.first_release_year,
-                    no_of_albums_released: formData.no_of_albums_released,
                     password: formData.password,
                 }),
             });
@@ -122,7 +112,7 @@ export default function ActivateAccountPage() {
             <div className="w-full max-w-md space-y-8">
                 <div className="flex items-center justify-center gap-2">
                     <Music className="w-8 h-8 text-primary" />
-                    <h1 className="text-2xl font-bold">MusicHub</h1>
+                    <h1 className="text-2xl font-bold">Cloco Music</h1>
                 </div>
 
                 <Card className="border border-border bg-card">
@@ -190,30 +180,6 @@ export default function ActivateAccountPage() {
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <label htmlFor="first_release_year" className="text-sm font-medium">
-                                    First Release Year
-                                </label>
-                                <Input
-                                    id="first_release_year"
-                                    placeholder="2020"
-                                    value={formData.first_release_year}
-                                    onChange={(e) => handleInputChange('first_release_year', e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="no_of_albums_released" className="text-sm font-medium">
-                                    Number of Albums Released
-                                </label>
-                                <Input
-                                    id="no_of_albums_released"
-                                    placeholder="5"
-                                    value={formData.no_of_albums_released}
-                                    onChange={(e) => handleInputChange('no_of_albums_released', e.target.value)}
-                                    required
-                                />
-                            </div>
                             <div className="space-y-2">
                                 <label htmlFor="password" className="text-sm font-medium">
                                     Password

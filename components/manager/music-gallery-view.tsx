@@ -1,6 +1,6 @@
 'use client';
 
-import { Music, Calendar } from 'lucide-react';
+import { Music, Calendar, User } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface MusicTrack {
@@ -125,9 +125,8 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
                                     <div className="pt-2 border-t border-border space-y-2">
                                         <div className="flex items-center justify-between gap-2">
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-xs text-muted-foreground">Artist</p>
-                                                <p className="text-sm font-medium text-foreground truncate">{track.artist_name}</p>
-                                                <p className="text-xs text-muted-foreground truncate">{track.artist_email}</p>
+                                                {/* <p className="text-xs text-muted-foreground">Artist</p> */}
+                                                <p className="text-sm font-medium text-foreground truncate"><User className="w-4 h-4 inline mr-1" /> {track.artist_name}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -151,6 +150,6 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
                     })}
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

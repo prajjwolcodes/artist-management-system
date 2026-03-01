@@ -2,11 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Music, Loader2 } from 'lucide-react';
+import { Music, Loader2, Filter } from 'lucide-react';
 import { MusicGalleryView } from '@/components/manager/music-gallery-view';
 import { PaginationControls } from '@/components/pagination/pagination-controls';
 import { Pagination } from '@/lib/types';
 import { toast } from 'sonner';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 interface MusicTrack {
     id: string;
@@ -18,9 +25,20 @@ interface MusicTrack {
     artist_email: string;
 }
 
+interface Artist {
+    id: string;
+    name: string;
+    email: string;
+    is_active: boolean;
+}
+
 interface MusicApiResponse {
     music: MusicTrack[];
     pagination: Pagination;
+}
+
+interface ArtistsApiResponse {
+    artists: Artist[];
 }
 
 export default function ManagerMusicPage() {
@@ -29,6 +47,8 @@ export default function ManagerMusicPage() {
     const limit = parseInt(searchParams.get('limit') || '10', 10);
 
     const [tracks, setTracks] = useState<MusicTrack[]>([]);
+    const [artists, setArtists] = useState<Artist[]>([]);
+    const [selectedArtistId, setSelectedArtistId] = useState<string>('all');
     const [pagination, setPagination] = useState<Pagination>({
         page: 1,
         limit: 10,
@@ -40,14 +60,41 @@ export default function ManagerMusicPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchTracks();
-    }, [page, limit]);
+        fetchArtists();
+    }, []);
+
+    useEffect(() => {
+        if (artists.length > 0 || selectedArtistId === 'all') {
+            fetchTracks();
+        }
+    }, [page, limit, selectedArtistId]);
+
+    const fetchArtists = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/artist?page=1&limit=1000`
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch artists');
+            }
+
+            const data: ArtistsApiResponse = await response.json();
+            const activeArtists = data.artists.filter(artist => artist.is_active === true); // Filter out artists without a name
+            console.log(data)
+            setArtists(activeArtists);
+        } catch (error) {
+            console.error('Error fetching artists:', error);
+            toast.error('Failed to load artists list');
+        }
+    };
 
     const fetchTracks = async () => {
         try {
             setLoading(true);
+            const artistParam = selectedArtistId !== 'all' ? `&artist_id=${selectedArtistId}` : '';
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/music?page=${page}&limit=${limit}`
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/music?page=${page}&limit=${limit}${artistParam}`
             );
 
             if (!response.ok) {
@@ -87,6 +134,40 @@ export default function ManagerMusicPage() {
                     <h1 className="text-3xl font-bold text-foreground">Your Artists&apos; Music</h1>
                     <p className="text-muted-foreground mt-1">View music created by your managed artists</p>
                 </div>
+            </div>
+
+            {/* Filter Section */}
+            <div className="flex items-center gap-3">
+                <Filter className="w-5 h-5 text-muted-foreground" />
+                <div className="flex items-center gap-2">
+                    <label htmlFor="artist-filter" className="text-sm font-medium">
+                        Filter by Artist:
+                    </label>
+                    <Select
+                        value={selectedArtistId}
+                        onValueChange={(value) => setSelectedArtistId(value)}
+                    >
+                        <SelectTrigger className="w-62.5">
+                            <SelectValue placeholder="Select an artist" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Artists</SelectItem>
+                            {artists.map((artist) => (
+                                <SelectItem key={artist.id} value={artist.id}>
+                                    {artist.name || artist.email}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+                {selectedArtistId !== 'all' && (
+                    <button
+                        onClick={() => setSelectedArtistId('all')}
+                        className="text-sm text-muted-foreground hover:text-foreground underline"
+                    >
+                        Clear filter
+                    </button>
+                )}
             </div>
 
             {/* Music Gallery */}

@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { useAuth } from '@/lib/auth-context';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Select,
     SelectContent,
@@ -13,148 +11,284 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { Music, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
-import { Music } from 'lucide-react';
-import { UserProfile } from '@/lib/types';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
-export default function ActivateAccountPage() {
+interface RegisterForm {
+    first_name: string;
+    last_name: string;
+    email: string;
+    dob: string;
+    gender?: string;
+    address: string;
+    phone?: string;
+    password: string;
+    confirmPassword: string;
+}
+
+export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState<UserProfile>({
+    const [adminExists, setAdminExists] = useState<boolean | null>(null);
+
+    const router = useRouter();
+
+    const [formData, setFormData] = useState<RegisterForm>({
         first_name: '',
         last_name: '',
         email: '',
         dob: '',
         gender: undefined,
         address: '',
-        phone: undefined,
+        phone: '',
         password: '',
         confirmPassword: '',
-
     });
 
-    const { register } = useAuth();
-    const router = useRouter();
-
-    const handleInputChange = (field: keyof UserProfile, value: string | number | undefined) => {
+    const handleInputChange = (
+        field: keyof RegisterForm,
+        value: string | undefined
+    ) => {
         setFormData((prev) => ({
             ...prev,
             [field]: value,
         }));
     };
 
+    // ✅ Check if super_admin already exists
+    useEffect(() => {
+        async function checkAdminExists() {
+            try {
+                const res = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/users/check-admin`
+                );
+                const data = await res.json();
+                setAdminExists(data.exists);
+            } catch (error) {
+                toast.error('Failed to check system status');
+                setAdminExists(true); // safer default
+            }
+        }
+        checkAdminExists();
+    }, []);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Validation
         if (
             !formData.first_name ||
             !formData.last_name ||
             !formData.email ||
             !formData.dob ||
             !formData.gender ||
-            !formData.address
+            !formData.address ||
+            !formData.password
         ) {
             toast.error('Please fill in all required fields');
             return;
         }
+
         if (formData.password !== formData.confirmPassword) {
             toast.error('Passwords do not match');
             return;
         }
 
-        setIsLoading(true);
         try {
-            await register(formData)
-            console.log(formData)
-            toast.success('Account created successfully!');
+            setIsLoading(true);
+
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/register`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                }
+            );
+
+            if (!res.ok) {
+                const data = await res.json();
+                // If registration is closed, refresh the admin check
+                if (res.status === 403) {
+                    setAdminExists(true);
+                    toast.error('Registration is closed. Use test credentials below.');
+                } else {
+                    throw new Error(data.error || 'Registration failed');
+                }
+                return;
+            }
+
+            toast.success('Super Admin account created successfully!');
             router.push('/login');
         } catch (error) {
-            toast.error(error instanceof Error ? error.message : 'Registration failed');
+            toast.error(
+                error instanceof Error ? error.message : 'Registration failed'
+            );
         } finally {
             setIsLoading(false);
         }
     };
 
+    // 🔄 Loading state while checking
+    if (adminExists === null) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-muted-foreground">Checking system status...</p>
+            </div>
+        );
+    }
+
+    // 🚫 Registration Closed UI
+    if (adminExists) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center px-4">
+                <Card className="w-full max-w-md text-center border border-border bg-card">
+                    <CardHeader>
+                        <div className="flex justify-center mb-2">
+                            <ShieldAlert className="w-8 h-8 text-destructive" />
+                        </div>
+                        <CardTitle className="text-xl">
+                            Registration is Closed
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p className="text-muted-foreground text-sm mb-8">
+                            You must be invited by an administrator to create an account.
+                        </p>
+
+
+
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t border-border" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-card px-2 text-muted-foreground">
+                                    Demo Access
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Test Credentials */}
+                        <div className="rounded-lg border border-border bg-muted/40 p-4 space-y-2 text-sm">
+                            <div className="flex justify-between">
+                                <span className="text-muted-foreground">Email</span>
+                                <span className="font-mono">superadmin@example.com</span>
+                            </div>
+
+                            <div className="flex justify-between">
+                                <span className="text-muted-foreground">Password</span>
+                                <span className="font-mono">superadmin123</span>
+                            </div>
+                        </div>
+
+
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t border-border" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-card px-2 text-muted-foreground">
+                                    OR
+                                </span>
+                            </div>
+                        </div>
+                        <Button asChild className="w-full">
+                            <Link href="/login">Go to Login</Link>
+                        </Button>
+
+                    </CardContent>
+                </Card>
+            </div>
+        );
+    }
+
+    // ✅ Normal Registration Form (only when no super_admin exists)
     return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-8">
-            <div className="w-full max-w-md space-y-8">
+            <div className="w-full max-w-lg space-y-8">
                 {/* Logo */}
                 <div className="flex items-center justify-center gap-2">
                     <Music className="w-8 h-8 text-primary" />
-                    <h1 className="text-2xl font-bold">MusicHub</h1>
+                    <h1 className="text-3xl font-bold">Cloco Music</h1>
                 </div>
 
-                {/* Card */}
                 <Card className="border border-border bg-card">
                     <CardHeader>
-                        <CardTitle>Register Your Account</CardTitle>
+                        <CardTitle className="text-lg">
+                            Create Super Admin Account
+                        </CardTitle>
                     </CardHeader>
+
                     <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-4">
+                        <form onSubmit={handleSubmit} className="space-y-5">
+
+                            {/* First + Last Name */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <label htmlFor="first_name" className="text-sm font-medium">
-                                        First Name
-                                    </label>
+                                    <Label htmlFor="first_name">First Name</Label>
                                     <Input
                                         id="first_name"
-                                        placeholder="Ram"
                                         value={formData.first_name}
-                                        onChange={(e) => handleInputChange('first_name', e.target.value)}
+                                        placeholder='Ram'
+                                        onChange={(e) =>
+                                            handleInputChange('first_name', e.target.value)
+                                        }
                                         required
                                     />
                                 </div>
+
                                 <div className="space-y-2">
-                                    <label htmlFor="last_name" className="text-sm font-medium">
-                                        Last Name
-                                    </label>
+                                    <Label htmlFor="last_name">Last Name</Label>
                                     <Input
                                         id="last_name"
-                                        placeholder="Thapa"
                                         value={formData.last_name}
-                                        onChange={(e) => handleInputChange('last_name', e.target.value)}
+                                        placeholder='Shrestha'
+                                        onChange={(e) =>
+                                            handleInputChange('last_name', e.target.value)
+                                        }
                                         required
                                     />
                                 </div>
                             </div>
 
+                            {/* Email */}
                             <div className="space-y-2">
-                                <label htmlFor="email" className="text-sm font-medium">
-                                    Email
-                                </label>
+                                <Label htmlFor="email">Email</Label>
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="ram@example.com"
+                                    placeholder="ramshhh@gmail.com"
                                     value={formData.email}
-                                    onChange={(e) => handleInputChange('email', e.target.value)}
+                                    onChange={(e) =>
+                                        handleInputChange('email', e.target.value)
+                                    }
                                     required
                                 />
                             </div>
 
+                            {/* DOB */}
                             <div className="space-y-2">
-                                <label htmlFor="dob" className="text-sm font-medium">
-                                    Date of Birth
-                                </label>
+                                <Label htmlFor="dob">Date of Birth</Label>
                                 <Input
                                     id="dob"
                                     type="date"
-                                    value={formData.dob || ''}
-                                    onChange={(e) => handleInputChange('dob', e.target.value)}
+                                    value={formData.dob}
+                                    onChange={(e) =>
+                                        handleInputChange('dob', e.target.value)
+                                    }
                                     required
                                 />
                             </div>
 
-                            <div className="flex justify-between items-center w-full ">
-                                <div className="w-1/2 pr-4">
-                                    <label htmlFor="gender" className="text-sm font-medium">
-                                        Gender
-                                    </label>
+                            {/* Gender + Phone */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label>Gender</Label>
                                     <Select
-                                        value={formData.gender || ''}
                                         onValueChange={(value) =>
-                                            handleInputChange('gender', value as any)
+                                            handleInputChange('gender', value)
                                         }
                                     >
                                         <SelectTrigger>
@@ -169,85 +303,78 @@ export default function ActivateAccountPage() {
                                 </div>
 
                                 <div className="space-y-2">
-                                    <label htmlFor="phone" className="text-sm font-medium">
-                                        Phone
-                                    </label>
+                                    <Label htmlFor="phone">Phone Number</Label>
                                     <Input
                                         id="phone"
-                                        placeholder="9812345678"
-                                        value={formData.phone || ''}
-                                        onChange={(e) => handleInputChange('phone', e.target.value)}
+                                        value={formData.phone}
+                                        placeholder="9841234567"
+                                        onChange={(e) =>
+                                            handleInputChange('phone', e.target.value)
+                                        }
                                         required
                                     />
                                 </div>
-
                             </div>
 
+                            {/* Address */}
                             <div className="space-y-2">
-                                <label htmlFor="address" className="text-sm font-medium">
-                                    Address
-                                </label>
+                                <Label htmlFor="address">Address</Label>
                                 <Input
                                     id="address"
-                                    placeholder="Khalpitar, Balkot"
                                     value={formData.address}
-                                    onChange={(e) => handleInputChange('address', e.target.value)}
+                                    placeholder="Khalpitar, Balkot"
+                                    onChange={(e) =>
+                                        handleInputChange('address', e.target.value)
+                                    }
                                     required
                                 />
                             </div>
 
-
-
+                            {/* Password */}
                             <div className="space-y-2">
-                                <label htmlFor="password" className="text-sm font-medium">
-                                    Password
-                                </label>
+                                <Label htmlFor="password">Password</Label>
                                 <Input
                                     id="password"
-                                    placeholder="Enter your password"
                                     type="password"
-                                    value={formData.password || ''}
-                                    onChange={(e) => handleInputChange('password', e.target.value)}
+                                    placeholder="Enter your password"
+                                    value={formData.password}
+                                    onChange={(e) =>
+                                        handleInputChange('password', e.target.value)
+                                    }
                                     required
                                 />
                             </div>
 
-
+                            {/* Confirm Password */}
                             <div className="space-y-2">
-                                <label htmlFor="confirmPassword" className="text-sm font-medium">
-                                    Confirm Password
-                                </label>
+                                <Label htmlFor="confirmPassword">Confirm Password</Label>
                                 <Input
                                     id="confirmPassword"
-                                    placeholder="Confirm your password"
                                     type="password"
-                                    value={formData.confirmPassword || ''}
-                                    onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                                    placeholder="Confirm your password"
+                                    value={formData.confirmPassword}
+                                    onChange={(e) =>
+                                        handleInputChange('confirmPassword', e.target.value)
+                                    }
                                     required
                                 />
                             </div>
 
-
-
-                            <Button
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full bg-primary hover:bg-primary/90 mt-6"
-                            >
+                            <Button type="submit" className="w-full" disabled={isLoading}>
                                 {isLoading ? 'Creating Account...' : 'Create Account'}
                             </Button>
+
                         </form>
                     </CardContent>
                 </Card>
 
-                {/* Sign In Link */}
                 <p className="text-center text-sm text-muted-foreground">
                     Already have an account?{' '}
-                    <Link href="/login" className="text-primary hover:underline font-medium">
+                    <Link href="/login" className="text-primary hover:underline">
                         Sign in
                     </Link>
                 </p>
-            </div >
-        </div >
+            </div>
+        </div>
     );
 }

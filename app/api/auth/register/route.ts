@@ -29,6 +29,17 @@ export async function POST(req: Request) {
         const { first_name, last_name, email, password, phone, dob, address, gender, role,
         } = parsed.data;
 
+        // Check if super_admin already exists
+        console.log(process.env.TEST_ADMIN_EMAIL);
+        const superAdminExists = await pool.query("SELECT id FROM users WHERE role = 'super_admin' AND email != $1 LIMIT 1", [process.env.TEST_ADMIN_EMAIL]);
+
+        if (superAdminExists.rows.length > 0) {
+            return NextResponse.json(
+                { error: "Registration is currently closed. Please use the provided test credentials." },
+                { status: 403 }
+            );
+        }
+
         const existingUser = await pool.query("SELECT id FROM users WHERE email = $1", [email]);
 
         if (existingUser.rows.length > 0) {
@@ -37,18 +48,14 @@ export async function POST(req: Request) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const userCount = await pool.query("SELECT COUNT(*) FROM users");
+        // Create the first user as super_admin
+        const finalRole = "super_admin";
+        const finalIsActive = true;
+        const isProfileComplete = true;
 
-        const finalRole =
-            parseInt(userCount.rows[0].count) === 0
-                ? "super_admin"
-                : role || "artist";
-
-        const finalIsActive = finalRole === "super_admin" ? true : false;
-        const isProfileComplete = finalRole === "super_admin" ? true : false;
         await pool.query(`INSERT INTO users (first_name, last_name, email, password, phone, dob, address, gender, role, is_active, profile_complete) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)`, [first_name, last_name, email, hashedPassword, phone, dob, address, gender, finalRole, finalIsActive, isProfileComplete]);
 
-        return NextResponse.json({ message: "User registered successfully" }, { status: 201 }
+        return NextResponse.json({ message: "Super Admin account created successfully!" }, { status: 201 }
         );
 
     } catch (error) {

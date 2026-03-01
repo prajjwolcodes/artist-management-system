@@ -119,7 +119,7 @@ export default function ActivateAccountPage() {
             <div className="w-full max-w-md space-y-8">
                 <div className="flex items-center justify-center gap-2">
                     <Music className="w-8 h-8 text-primary" />
-                    <h1 className="text-2xl font-bold">MusicHub</h1>
+                    <h1 className="text-2xl font-bold">Cloco Music</h1>
                 </div>
 
                 <Card className="border border-border bg-card">

@@ -42,6 +42,7 @@ export async function GET(req: NextRequest) {
         const url = new URL(req.url);
         const page = Math.max(1, parseInt(url.searchParams.get("page") || "1", 10));
         const limit = Math.max(1, Math.min(100, parseInt(url.searchParams.get("limit") || "10", 10)));
+        const artistId = url.searchParams.get("artist_id");
 
         const offset = (page - 1) * limit;
 
@@ -52,11 +53,22 @@ export async function GET(req: NextRequest) {
         if (user.role === "artist_manager") {
             whereClause = "WHERE a.artist_manager_id = $1";
             queryParams = [user.id];
+
+            // Add artist filter if provided
+            if (artistId) {
+                whereClause += ` AND a.user_id = $${queryParams.length + 1}`;
+                queryParams.push(artistId);
+            }
         } else if (user.role === "artist") {
             whereClause = "WHERE a.user_id = $1";
             queryParams = [user.id];
+        } else if (user.role === "super_admin") {
+            // super_admin can filter by artist if provided
+            if (artistId) {
+                whereClause = "WHERE a.user_id = $1";
+                queryParams = [artistId];
+            }
         }
-        // super_admin has no WHERE clause to see all music
 
         // Get total count of music
         const countResult = await pool.query(
