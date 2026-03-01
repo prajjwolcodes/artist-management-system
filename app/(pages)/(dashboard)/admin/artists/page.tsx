@@ -97,25 +97,26 @@ export default function ArtistsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Artists</h1>
-        <p className="mt-1 text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold">Artists</h1>
+        <p className="mt-1 text-sm sm:text-base text-muted-foreground">
           View all registered artists in the system
         </p>
       </div>
 
-      <Card className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <Card className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
         <div className="mb-6 space-y-4">
-          <div className="flex flex-row gap-2 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center items-stretch sm:items-center">
             <Input
               placeholder="Search by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full"
             />
             <Select
               value={statusFilter}
               onValueChange={(value: any) => setStatusFilter(value)}
             >
-              <SelectTrigger className="w-40">
+              <SelectTrigger className="w-full sm:w-40">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -128,7 +129,7 @@ export default function ArtistsPage() {
         </div>
 
         <ArtistTable artists={filteredArtists} />
-        <div className="ml-auto text-sm text-muted-foreground pt-2">
+        <div className="text-xs sm:text-sm text-muted-foreground pt-2 sm:text-right">
           Showing {filteredArtists.length} of {pagination.total} artists
         </div>
       </Card>

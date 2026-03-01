@@ -4,7 +4,7 @@ import { useAuth } from '@/lib/auth-context';
 import { Card } from '@/components/ui/card';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Users, Music2, CheckCircle, Clock, Loader2 } from 'lucide-react';
+import { ArrowRight, Users, Music2, CheckCircle, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {
   Table,
@@ -130,10 +130,10 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-balance mt-4">Welcome, {currentUser?.name}</h1>
-        <p className="text-base mt-2 text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold text-balance mt-2 sm:mt-4">Welcome, {currentUser?.name}</h1>
+        <p className="text-sm sm:text-base mt-2 text-muted-foreground">
           Manage all platform users and monitor system activity
         </p>
       </div>
@@ -144,7 +144,7 @@ export default function AdminDashboard() {
           return (
             <Card
               key={stat.title}
-              className="rounded-2xl border border-border bg-card p-6 shadow-sm"
+              className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm"
             >
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">{stat.title}</p>
@@ -161,13 +161,13 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Managers Section */}
-        <Card className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+        <Card className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
               <h2 className="text-lg font-semibold">Recent Managers</h2>
             </div>
             <Link href="/admin/managers">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="w-full sm:w-auto">
                 View All <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
               <TableHeader className="bg-muted">
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
+                  <TableHead className="hidden sm:table-cell">Email</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -194,7 +194,7 @@ export default function AdminDashboard() {
                       <TableCell className="font-medium">
                         {manager.first_name} {manager.last_name}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">
                         {manager.email}
                       </TableCell>
                     </TableRow>
@@ -206,13 +206,13 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Artists Section */}
-        <Card className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+        <Card className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
               <h2 className="text-lg font-semibold">Recent Artists</h2>
             </div>
             <Link href="/admin/artists">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="w-full sm:w-auto">
                 View All <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
@@ -223,7 +223,7 @@ export default function AdminDashboard() {
               <TableHeader className="bg-muted">
                 <TableRow>
                   <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
+                  <TableHead className="hidden sm:table-cell">Email</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -238,7 +238,7 @@ export default function AdminDashboard() {
                   recentArtists.map((artist) => (
                     <TableRow key={artist.id}>
                       <TableCell className="font-medium">{artist.name === " " ? "Not Activated" : artist.name}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">
+                      <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">
                         {artist.email}
                       </TableCell>
                       <TableCell>

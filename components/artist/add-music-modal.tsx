@@ -79,9 +79,9 @@ export function AddMusicModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-125">
+      <DialogContent className="max-w-[calc(100%-1rem)] sm:max-w-125 p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-2xl">
+          <DialogTitle className="text-xl sm:text-2xl">
             {editingTrack ? 'Edit Track' : 'Add New Track'}
           </DialogTitle>
           <DialogDescription>
@@ -119,7 +119,7 @@ export function AddMusicModal({
           </div>
 
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2 ">
               <Label htmlFor="genre" className='mb-2'>Genre</Label>
               <Select
@@ -157,17 +157,17 @@ export function AddMusicModal({
             </div>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
             <Button
               type="submit"
-              className="flex-1 bg-primary hover:bg-primary/90 shadow-lg"
+              className="flex-1 bg-primary hover:bg-primary/90 shadow-lg w-full"
             >
               {editingTrack ? 'Update Track' : 'Add Track'}
             </Button>
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
+              className="flex-1 w-full"
               onClick={() => onOpenChange(false)}
             >
               Cancel

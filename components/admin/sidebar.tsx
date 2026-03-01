@@ -2,10 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Music, Users, Plus, Settings, LayoutDashboard, BarChart3 } from 'lucide-react';
+import { Music, Users, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import LogoutButton from '@/app/(pages)/(auth)/logout/page';
-
 
 const navItems = [
   { href: '/admin', label: 'Dashboard', icon: BarChart3 },
@@ -51,4 +49,35 @@ export function AdminSidebar() {
 
     </aside>
   );
-} 
+}
+
+export function AdminMobileNav() {
+  const pathname = usePathname();
+
+  return (
+    <div className="md:hidden border-b border-border bg-card/80">
+      <nav className="flex items-center gap-2 overflow-x-auto px-3 py-3">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'inline-flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors',
+                isActive
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              )}
+            >
+              <Icon className="w-4 h-4" />
+              <span>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}

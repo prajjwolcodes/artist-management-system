@@ -44,8 +44,8 @@ export function ManagerTable({ managers, onDelete, onResendActivation, isResendi
         <TableHeader className="bg-muted">
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>ID</TableHead>
+            <TableHead className="hidden sm:table-cell">Email</TableHead>
+            <TableHead className="hidden lg:table-cell">ID</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -61,8 +61,8 @@ export function ManagerTable({ managers, onDelete, onResendActivation, isResendi
             managers.map((manager) => (
               <TableRow key={manager.id}>
                 <TableCell className="font-medium">{manager.name}</TableCell>
-                <TableCell>{manager.email}</TableCell>
-                <TableCell className="text-sm text-muted-foreground">{manager.id}</TableCell>
+                <TableCell className="hidden sm:table-cell">{manager.email}</TableCell>
+                <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">{manager.id}</TableCell>
                 <TableCell>
                   <Badge className={getStatusColor(manager.is_active)} variant="outline">
                     {manager.is_active ? 'Active' : 'Pending'}
@@ -79,13 +79,15 @@ export function ManagerTable({ managers, onDelete, onResendActivation, isResendi
                         onClick={() => onResendActivation(manager)}
                         title="Resend activation link"
                       >
-                        <RefreshCw className="w-4 h-4 mr-1" />
-                        {isResending === manager.id ? 'Sending...' : 'Resend'}
+                        <RefreshCw className="w-4 h-4 sm:mr-1" />
+                        <span className="hidden sm:inline">
+                          {isResending === manager.id ? 'Sending...' : 'Resend'}
+                        </span>
                       </Button>
                     )}
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="sm">
+                        <Button variant="ghost" size="sm" className="px-2">
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>

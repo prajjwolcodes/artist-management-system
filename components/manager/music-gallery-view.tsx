@@ -37,16 +37,16 @@ const genreBadgeStyles: Record<string, string> = {
 export function MusicGalleryView({ tracks, artistCount }: MusicGalleryViewProps) {
     if (tracks.length === 0) {
         return (
-            <div className="flex items-center justify-center min-h-80 bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-lg border border-border">
+            <div className="flex items-center justify-center min-h-64 sm:min-h-80 bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-lg border border-border p-6">
                 <div className="text-center space-y-4">
                     <div className="flex justify-center">
-                        <div className="p-4 bg-primary/10 rounded-full">
-                            <Music className="w-8 h-8 text-primary" />
+                        <div className="p-3 sm:p-4 bg-primary/10 rounded-full">
+                            <Music className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
                         </div>
                     </div>
                     <div>
-                        <p className="text-lg font-semibold text-foreground">No music found</p>
-                        <p className="text-sm text-muted-foreground mt-2">
+                        <p className="text-base sm:text-lg font-semibold text-foreground">No music found</p>
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-2">
                             Your artists haven&apos;t created any music yet
                         </p>
                     </div>
@@ -56,16 +56,16 @@ export function MusicGalleryView({ tracks, artistCount }: MusicGalleryViewProps)
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
             {/* Stats Summary */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 <div className="bg-card border border-border rounded-lg p-4">
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-muted-foreground">Total Tracks</p>
-                            <p className="text-2xl font-bold text-foreground">{tracks.length}</p>
+                            <p className="text-xl sm:text-2xl font-bold text-foreground">{tracks.length}</p>
                         </div>
-                        <Music className="w-10 h-10 text-primary/20" />
+                        <Music className="w-8 h-8 sm:w-10 sm:h-10 text-primary/20" />
                     </div>
                 </div>
 
@@ -73,11 +73,11 @@ export function MusicGalleryView({ tracks, artistCount }: MusicGalleryViewProps)
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-muted-foreground">Total Artists</p>
-                            <p className="text-2xl font-bold text-foreground">
+                            <p className="text-xl sm:text-2xl font-bold text-foreground">
                                 {artistCount}
                             </p>
                         </div>
-                        <Music className="w-10 h-10 text-primary/20" />
+                        <Music className="w-8 h-8 sm:w-10 sm:h-10 text-primary/20" />
                     </div>
                 </div>
 
@@ -85,18 +85,18 @@ export function MusicGalleryView({ tracks, artistCount }: MusicGalleryViewProps)
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-sm text-muted-foreground">Unique Albums</p>
-                            <p className="text-2xl font-bold text-foreground">
+                            <p className="text-xl sm:text-2xl font-bold text-foreground">
                                 {new Set(tracks.map((t) => t.album_name)).size}
                             </p>
                         </div>
-                        <Music className="w-10 h-10 text-primary/20" />
+                        <Music className="w-8 h-8 sm:w-10 sm:h-10 text-primary/20" />
                     </div>
                 </div>
             </div>
 
             {/* Music Grid */}
             <div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                     {tracks.map((track) => {
                         const colors = genreColors[track.genre] || genreColors['rock'];
                         const badgeStyle = genreBadgeStyles[track.genre] || genreBadgeStyles['rock'];
@@ -111,8 +111,8 @@ export function MusicGalleryView({ tracks, artistCount }: MusicGalleryViewProps)
                                     className={`relative pb-[90%] w-full transition-all duration-300 ${colors.bg}`}
                                 >
                                     <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-primary/20 to-primary/5">
-                                        <div className={`p-6 rounded-full ${colors.bg}`}>
-                                            <Music className={`w-12 h-12 ${colors.text} transition-transform duration-300 group-hover:scale-110`} />
+                                        <div className={`p-4 sm:p-6 rounded-full ${colors.bg}`}>
+                                            <Music className={`w-10 h-10 sm:w-12 sm:h-12 ${colors.text} transition-transform duration-300 group-hover:scale-110`} />
                                         </div>
                                     </div>
                                 </div>

@@ -164,17 +164,17 @@ export default function ArtistMusicPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 bg-primary/10 rounded-lg">
               <Music className="w-5 h-5 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">My Music</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">My Music</h1>
           </div>
-          <p className="text-base text-muted-foreground">Manage your tracks and albums with a modern interface</p>
+          <p className="text-sm sm:text-base text-muted-foreground">Manage your tracks and albums with a modern interface</p>
         </div>
         <Button
           onClick={() => {
@@ -182,7 +182,7 @@ export default function ArtistMusicPage() {
             setModalOpen(true);
           }}
           disabled={isSubmitting}
-          className="bg-primary hover:bg-primary/90 gap-2 shadow-lg"
+          className="bg-primary hover:bg-primary/90 gap-2 shadow-lg w-full sm:w-auto"
         >
           <Plus className="w-4 h-4" />
           Add Track

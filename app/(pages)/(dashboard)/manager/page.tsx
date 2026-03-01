@@ -122,13 +122,13 @@ export default function ManagerDashboard() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-2">Welcome back! Here&apos;s what&apos;s happening.</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-sm sm:text-base text-muted-foreground mt-2">Welcome back! Here&apos;s what&apos;s happening.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         {cards.map((card) => (
           <StatCard
             key={card.label}
@@ -141,7 +141,7 @@ export default function ManagerDashboard() {
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-foreground">Recent Artists</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-foreground">Recent Artists</h2>
         <ManagerRecentTable artists={recentArtists} />
       </div>
     </div>

@@ -57,7 +57,7 @@ export function CreateManagerModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="max-w-[calc(100%-1rem)] sm:max-w-md p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>Create Manager</DialogTitle>
           <DialogDescription>
@@ -79,16 +79,17 @@ export function CreateManagerModal({
             )}
           </div>
 
-          <div className="flex gap-2 justify-end pt-4">
+          <div className="flex flex-col-reverse sm:flex-row gap-2 justify-end pt-4">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isLoading}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
               {isLoading ? 'Sending...' : 'Send Invite'}
             </Button>
           </div>

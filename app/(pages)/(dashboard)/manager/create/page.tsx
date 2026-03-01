@@ -217,12 +217,12 @@ export default function CreateArtistPage() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header with Import Button */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Create Artist</h1>
-          <p className="text-base text-muted-foreground mt-2">Invite a new artist and send activation</p>
+          <p className="text-sm sm:text-base text-muted-foreground mt-2">Invite a new artist and send activation</p>
         </div>
         <Button
           onClick={() => {
@@ -232,14 +232,14 @@ export default function CreateArtistPage() {
             }
             setShowCsvWarning(true);
           }}
-          className="bg-primary hover:bg-primary/90"
+          className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
         >
           Import CSV
         </Button>
       </div>
 
       {/* Manual Form Card */}
-      <Card className="bg-card border border-border max-w-2xl">
+      <Card className="bg-card border border-border max-w-2xl w-full">
         <CardHeader>
           <CardTitle>Artist Invitation</CardTitle>
           <CardDescription>Enter artist name and email to send invite link</CardDescription>
@@ -269,15 +269,15 @@ export default function CreateArtistPage() {
               />
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="bg-primary hover:bg-primary/90"
+                className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
               >
                 {isLoading ? 'Sending Invite...' : 'Send Invite'}
               </Button>
-              <Button type="button" variant="outline" onClick={() => setFormData({ email: '', displayName: '' })}>
+              <Button type="button" variant="outline" onClick={() => setFormData({ email: '', displayName: '' })} className="w-full sm:w-auto">
                 Clear
               </Button>
             </div>
@@ -287,7 +287,7 @@ export default function CreateArtistPage() {
 
       {/* CSV Import Card */}
       <Dialog open={showCsvModal} onOpenChange={setShowCsvModal}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-[calc(100%-1rem)] sm:max-w-md p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle>Bulk Import Artists</DialogTitle>
             <DialogDescription>Upload a CSV file to invite multiple artists at once</DialogDescription>
@@ -322,11 +322,12 @@ export default function CreateArtistPage() {
               </div>
             )}
 
-            <div className="flex gap-3 justify-end">
+            <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setShowCsvModal(false)}
+                className="w-full sm:w-auto"
               >
                 Cancel
               </Button>
@@ -334,7 +335,7 @@ export default function CreateArtistPage() {
                 type="button"
                 onClick={handleBulkUpload}
                 disabled={!csvFile || isBulkUploading}
-                className="bg-primary hover:bg-primary/90"
+                className="bg-primary hover:bg-primary/90 w-full sm:w-auto"
               >
                 {isBulkUploading ? 'Uploading...' : 'Upload CSV'}
               </Button>
@@ -373,7 +374,7 @@ Ram Thapa,thaparam@example.com`}
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="flex gap-3 justify-end">
+          <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end">
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={() => setShowCsvModal(true)} disabled={isBulkUploading}>
               {isBulkUploading ? 'Processing...' : 'Continue'}

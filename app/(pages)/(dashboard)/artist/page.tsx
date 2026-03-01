@@ -6,19 +6,12 @@ import {
   Calendar,
   Loader2,
   TrendingUp,
-  ArrowUpRight,
-  Plus,
-  BarChart3,
-  User,
 } from 'lucide-react'
 import { ArtistStatCard } from '@/components/artist/stat-card'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
 import { useAuth } from '@/lib/auth-context'
 
 interface ArtistStats {
@@ -122,14 +115,14 @@ export default function ArtistDashboard() {
   }
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-6 sm:space-y-8 pb-8">
       {/* Header */}
       <div className="rounded-xl">
-        <h1 className="text-2xl font-bold mb-2">Welcome Back, {currentUser?.name || 'Artist'}!</h1>
+        <h1 className="text-xl sm:text-2xl font-bold mb-2">Welcome Back, {currentUser?.name || 'Artist'}!</h1>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
         <ArtistStatCard
           icon={Disc3}
           label="Albums"
@@ -160,28 +153,28 @@ export default function ArtistDashboard() {
       <div className="">
         {/* Top Performing Tracks */}
         <Card className="lg:col-span-2 hover:shadow-md transition-shadow">
-          <CardHeader>
+          <CardHeader className="pb-3 sm:pb-6">
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-primary" />
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               Top Performing Tracks
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-5">
+          <CardContent className="space-y-4 sm:space-y-5">
             {topTracks.length > 0 ? (
               topTracks.map((track, index) => (
                 <div
                   key={track.id}
-                  className="flex items-center gap-4 group"
+                  className="flex items-center gap-3 sm:gap-4 group"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-semibold text-primary">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/10 flex items-center justify-center font-semibold text-primary text-sm sm:text-base">
                     {index + 1}
                   </div>
 
                   <div className="flex-1">
-                    <p className="font-medium group-hover:text-primary transition">
+                    <p className="font-medium group-hover:text-primary transition text-sm sm:text-base">
                       {track.title}
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       {track.album_name}
                     </p>
 
@@ -197,7 +190,7 @@ export default function ArtistDashboard() {
                     {/* <p className="font-semibold">
                       {track.plays || 0}
                     </p> */}
-                    <Badge className={genreColors[track.genre]?.bg + ' ' + genreColors[track.genre]?.text} variant="outline">
+                    <Badge className={genreColors[track.genre]?.bg + ' ' + genreColors[track.genre]?.text + ' text-xs sm:text-sm'} variant="outline">
                       {track.genre}
 
                     </Badge>

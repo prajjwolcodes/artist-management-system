@@ -36,11 +36,11 @@ export function ArtistTable({ artists }: ArtistTableProps) {
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Manager</TableHead>
-            <TableHead>First Release</TableHead>
-            <TableHead>Albums</TableHead>
+            <TableHead className="hidden md:table-cell">Manager</TableHead>
+            <TableHead className="hidden sm:table-cell">First Release</TableHead>
+            <TableHead className="hidden sm:table-cell">Albums</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Created</TableHead>
+            <TableHead className="hidden lg:table-cell">Created</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -55,15 +55,15 @@ export function ArtistTable({ artists }: ArtistTableProps) {
               <TableRow key={artist.id}>
                 <TableCell className="font-medium">{artist.displayName}</TableCell>
                 <TableCell className="text-sm">{artist.email}</TableCell>
-                <TableCell className="text-sm">
+                <TableCell className="hidden md:table-cell text-sm">
                   {artist.manager_name ? (
                     <span className="text-primary">{artist.manager_name}</span>
                   ) : (
                     <span className="text-muted-foreground italic">Unassigned</span>
                   )}
                 </TableCell>
-                <TableCell>{artist.first_release_year}</TableCell>
-                <TableCell className="text-center">{artist.no_of_albums_released}</TableCell>
+                <TableCell className="hidden sm:table-cell">{artist.first_release_year}</TableCell>
+                <TableCell className="hidden sm:table-cell text-center">{artist.no_of_albums_released}</TableCell>
                 <TableCell>
                   <Badge className={getStatusColor(artist.status)} variant="outline">
                     {artist.status.charAt(0).toUpperCase() + artist.status.slice(1)}
@@ -71,7 +71,7 @@ export function ArtistTable({ artists }: ArtistTableProps) {
                   </Badge>
                   {/* {artist.status  === 'pending' && <Button variant="outline" size="xs" className="ml-2" onClick={() => sendActivationEmail(artist.email,token)}>Activate</Button>} */}
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
+                <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                   {new Date(artist.createdAt).toLocaleDateString()}
                 </TableCell>
               </TableRow>

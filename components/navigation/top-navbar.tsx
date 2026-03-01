@@ -16,23 +16,23 @@ export function TopNavbar() {
 
   return (
     <div className="border-b border-border bg-card">
-      <div className="flex items-center justify-between px-6 md:px-8 py-4">
+      <div className="flex items-center justify-between px-3 sm:px-6 md:px-8 py-3 sm:py-4">
         <div className="flex items-center gap-2">
           <Music className="w-5 h-5 text-primary" />
-          {currentUser?.role === 'artist_manager' && <h1 className="text-sm font-semibold text-foreground">Manager Dashboard</h1>}
-          {currentUser?.role === 'artist' && <h1 className="text-sm font-semibold text-foreground">Artist Dashboard</h1>}
-          {currentUser?.role === 'super_admin' && <h1 className="text-sm font-semibold text-foreground">Admin Dashboard</h1>}
+          {currentUser?.role === 'artist_manager' && <h1 className="text-xs sm:text-sm font-semibold text-foreground">Manager Dashboard</h1>}
+          {currentUser?.role === 'artist' && <h1 className="text-xs sm:text-sm font-semibold text-foreground">Artist Dashboard</h1>}
+          {currentUser?.role === 'super_admin' && <h1 className="text-xs sm:text-sm font-semibold text-foreground">Admin Dashboard</h1>}
         </div>
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">{currentUser?.name}</span>
+        <div className="flex items-center gap-2 sm:gap-4">
+          <span className="hidden sm:inline text-sm text-muted-foreground truncate max-w-40">{currentUser?.name}</span>
           <Button
             variant="ghost"
             size="sm"
             onClick={handleLogout}
-            className="gap-2"
+            className="gap-1 sm:gap-2 px-2 sm:px-3"
           >
             <LogOut className="w-4 h-4" />
-            Logout
+            <span className="hidden sm:inline">Logout</span>
           </Button>
         </div>
       </div>

@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { PaginationControls } from '@/components/pagination/pagination-controls';
 import { ManagerTable } from '@/components/admin/manager-table';
 import { CreateManagerModal } from '@/components/admin/create-manager-modal';
@@ -156,18 +155,18 @@ export default function ManagersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold">Managers</h1>
-          <p className="mt-1 text-muted-foreground">Create and manage artist managers</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Managers</h1>
+          <p className="mt-1 text-sm sm:text-base text-muted-foreground">Create and manage artist managers</p>
         </div>
-        <Button onClick={() => setIsCreateModalOpen(true)} className="gap-2">
+        <Button onClick={() => setIsCreateModalOpen(true)} className="gap-2 w-full sm:w-auto">
           <Plus className="h-4 w-4" />
           Create Manager
         </Button>
       </div>
 
-      <Card className="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <Card className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
 
         <ManagerTable
           managers={managers}

@@ -31,10 +31,10 @@ export function ManagerRecentTable({ artists }: { artists: RecentArtist[] }) {
         <TableHeader className="bg-muted">
           <TableRow>
             <TableHead>Artist Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Albums</TableHead>
+            <TableHead className="hidden sm:table-cell">Email</TableHead>
+            <TableHead className="hidden md:table-cell">Albums</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Joined</TableHead>
+            <TableHead className="hidden lg:table-cell">Joined</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -48,14 +48,14 @@ export function ManagerRecentTable({ artists }: { artists: RecentArtist[] }) {
             artists.map((artist) => (
               <TableRow key={artist.id}>
                 <TableCell className="font-medium">{artist.name || 'N/A'}</TableCell>
-                <TableCell className="text-muted-foreground text-sm">{artist.email}</TableCell>
-                <TableCell>{artist.no_of_albums_released ?? 0}</TableCell>
+                <TableCell className="hidden sm:table-cell text-muted-foreground text-sm">{artist.email}</TableCell>
+                <TableCell className="hidden md:table-cell">{artist.no_of_albums_released ?? 0}</TableCell>
                 <TableCell>
                   <Badge className={getStatusColor(artist.is_active)} variant="outline">
                     {artist.is_active ? 'Active' : 'Pending'}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-muted-foreground text-sm">
+                <TableCell className="hidden lg:table-cell text-muted-foreground text-sm">
                   {new Date(artist.created_at).toLocaleDateString()}
                 </TableCell>
               </TableRow>

@@ -123,23 +123,23 @@ export default function ManagerMusicPage() {
     }
 
     return (
-        <div className="space-y-2">
+        <div className="space-y-4 sm:space-y-6">
             {/* Header */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-start sm:items-center gap-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                     <Music className="w-5 h-5 text-primary" />
                 </div>
-                <div className='flex flex-row justify-between items-center w-full'>
-                    <h1 className="text-2xl font-bold text-foreground">Your Artists&apos; Music</h1>
+                <div className='flex flex-col sm:flex-row justify-between sm:items-center gap-3 w-full'>
+                    <h1 className="text-xl sm:text-2xl font-bold text-foreground">Your Artists&apos; Music</h1>
 
-                    <div className="flex items-center gap-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                         <Filter className="w-5 h-5 text-muted-foreground" />
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-full">
                             <Select
                                 value={selectedArtistId}
                                 onValueChange={(value) => setSelectedArtistId(value)}
                             >
-                                <SelectTrigger className="w-62.5">
+                                <SelectTrigger className="w-full sm:w-62.5">
                                     <SelectValue placeholder="Select an artist" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -165,7 +165,7 @@ export default function ManagerMusicPage() {
 
 
             </div>
-            <p className="text-base text-muted-foreground mb-8">View all your tracks and albums</p>
+            <p className="text-sm sm:text-base text-muted-foreground">View all your tracks and albums</p>
             {/* Filter Section */}
 
 
