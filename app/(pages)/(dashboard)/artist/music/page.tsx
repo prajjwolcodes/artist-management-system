@@ -95,6 +95,7 @@ export default function ArtistMusicPage() {
           title: newTrack.title,
           album_name: newTrack.album_name,
           genre: newTrack.genre,
+          createdAt: newTrack.createdAt,
         }),
       });
 

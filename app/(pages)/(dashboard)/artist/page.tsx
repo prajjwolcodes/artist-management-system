@@ -1,89 +1,152 @@
-'use client';
+'use client'
 
-import { Disc3, Music, Calendar, Loader2 } from 'lucide-react';
-import { ArtistStatCard } from '@/components/artist/stat-card';
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
+import {
+  Disc3,
+  Music,
+  Calendar,
+  Loader2,
+  TrendingUp,
+  ArrowUpRight,
+  Plus,
+  BarChart3,
+  User,
+} from 'lucide-react'
+import { ArtistStatCard } from '@/components/artist/stat-card'
+import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
+import Link from 'next/link'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { useAuth } from '@/lib/auth-context'
 
 interface ArtistStats {
-  totalAlbums: number;
-  totalTracks: number;
-  firstReleaseYear: number;
+  totalAlbums: number
+  totalTracks: number
+  firstReleaseYear: number
+  totalPlays: number
+}
+
+interface MusicTrack {
+  id: number
+  title: string
+  album_name: string
+  genre: string
+  plays: number
+  created_at: string
 }
 
 export default function ArtistDashboard() {
+  const { currentUser } = useAuth()
   const [stats, setStats] = useState<ArtistStats>({
     totalAlbums: 0,
     totalTracks: 0,
     firstReleaseYear: 0,
-  });
-  const [loading, setLoading] = useState(true);
+    totalPlays: 0,
+  })
+
+  const [topTracks, setTopTracks] = useState<MusicTrack[]>([])
+  const [loading, setLoading] = useState(true)
+
+
+  const genreColors: Record<string, { bg: string; text: string }> = {
+    rock: { bg: 'bg-red-50 dark:bg-red-950', text: 'text-red-700 dark:text-red-300' },
+    rnb: { bg: 'bg-blue-50 dark:bg-blue-950', text: 'text-blue-700 dark:text-blue-300' },
+    jazz: { bg: 'bg-amber-50 dark:bg-amber-950', text: 'text-amber-700 dark:text-amber-300' },
+    classic: { bg: 'bg-purple-50 dark:bg-purple-950', text: 'text-purple-700 dark:text-purple-300' },
+    country: { bg: 'bg-orange-50 dark:bg-orange-950', text: 'text-orange-700 dark:text-orange-300' },
+  };
 
   useEffect(() => {
-    fetchDashboardStats();
-  }, []);
+    fetchDashboardStats()
+  }, [])
 
   const fetchDashboardStats = async () => {
     try {
-      setLoading(true);
-      // Fetch all music to calculate stats
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/music?limit=100`);
+      setLoading(true)
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch music');
-      }
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/music?limit=100`
+      )
 
-      const data = await response.json();
-      const music = data.music || [];
+      if (!response.ok) throw new Error('Failed to fetch music')
 
-      // Calculate unique albums
-      const uniqueAlbums = new Set(music.map((track: any) => track.album_name)).size;
+      const data = await response.json()
+      const music = data.music || []
+
+      const uniqueAlbums = new Set(
+        music.map((track: any) => track.album_name)
+      ).size
+
+      const totalPlays = music.reduce(
+        (acc: number, track: any) => acc + (track.plays || 0),
+        0
+      )
+
+      // Sort by plays
+      const sortedByPlays = [...music].sort(
+        (a: any, b: any) => (b.plays || 0) - (a.plays || 0)
+      )
+
+      const oldestReleaseYear =
+        music.length > 0
+          ? new Date(
+            Math.min(
+              ...music.map((track: any) => new Date(track.created_at).getTime())
+            )
+          ).getFullYear()
+          : 0
 
       setStats({
         totalAlbums: uniqueAlbums,
         totalTracks: music.length,
-        firstReleaseYear: music.length > 0 ? new Date().getFullYear() : 0,
-      });
+        firstReleaseYear: oldestReleaseYear,
+        totalPlays,
+      })
+
+      setTopTracks(sortedByPlays.slice(0, 5))
     } catch (error) {
-      console.error('Error fetching stats:', error);
-      toast.error('Failed to load dashboard stats');
+      toast.error('Failed to load dashboard stats')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading dashboard...</p>
-        </div>
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    );
+    )
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-8">
       {/* Header */}
-      {/* <div>
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-base text-muted-foreground mt-2">Welcome to your music dashboard</p>
-      </div> */}
+      <div className="rounded-xl">
+        <h1 className="text-2xl font-bold mb-2">Welcome Back, {currentUser?.name || 'Artist'}!</h1>
+      </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <ArtistStatCard
           icon={Disc3}
-          label="Total Albums"
+          label="Albums"
           value={stats.totalAlbums}
-          description="Albums released"
+          description="Total released"
         />
         <ArtistStatCard
           icon={Music}
-          label="Total Tracks"
+          label="Tracks"
           value={stats.totalTracks}
-          description="Songs available"
+          description="Songs uploaded"
+        />
+        <ArtistStatCard
+          icon={TrendingUp}
+          label="Total Plays"
+          value={stats.totalPlays}
+          description="All-time streams"
         />
         <ArtistStatCard
           icon={Calendar}
@@ -93,35 +156,63 @@ export default function ArtistDashboard() {
         />
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-6 bg-card border border-border rounded-lg">
-          <h3 className="font-semibold text-foreground mb-4">About Your Career</h3>
-          <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Active Since</span>
-              <span className="font-medium">{stats.firstReleaseYear || 'N/A'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Albums</span>
-              <span className="font-medium">{stats.totalAlbums}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Tracks</span>
-              <span className="font-medium">{stats.totalTracks}</span>
-            </div>
-          </div>
-        </div>
+      {/* Performance + Quick Actions */}
+      <div className="">
+        {/* Top Performing Tracks */}
+        <Card className="lg:col-span-2 hover:shadow-md transition-shadow">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary" />
+              Top Performing Tracks
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            {topTracks.length > 0 ? (
+              topTracks.map((track, index) => (
+                <div
+                  key={track.id}
+                  className="flex items-center gap-4 group"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-semibold text-primary">
+                    {index + 1}
+                  </div>
 
-        <div className="p-6 bg-card border border-border rounded-lg">
-          <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
-          <div className="space-y-2 text-sm">
-            <p className="text-muted-foreground">Visit My Music to manage your tracks</p>
-            <p className="text-muted-foreground">Update your profile anytime</p>
-            <p className="text-muted-foreground">Check your releases status</p>
-          </div>
-        </div>
+                  <div className="flex-1">
+                    <p className="font-medium group-hover:text-primary transition">
+                      {track.title}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {track.album_name}
+                    </p>
+
+                    {/* <Progress
+                      value={
+                        (track.plays / stats.totalPlays) * 100 || 0
+                      }
+                      className="h-2 mt-2"
+                    /> */}
+                  </div>
+
+                  <div className="text-right">
+                    {/* <p className="font-semibold">
+                      {track.plays || 0}
+                    </p> */}
+                    <Badge className={genreColors[track.genre]?.bg + ' ' + genreColors[track.genre]?.text} variant="outline">
+                      {track.genre}
+
+                    </Badge>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                No performance data yet
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
       </div>
     </div>
-  );
+  )
 }

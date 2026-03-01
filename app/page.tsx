@@ -1,17 +1,16 @@
-import React from 'react';
-import Link from 'next/link';
-import {
-  Music,
-  Mic2,
-  PlusCircle,
-  Upload,
-  Users,
-  TrendingUp,
-  ChevronRight,
-  Play
-} from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  ChevronRight,
+  Mic2,
+  Music,
+  Play,
+  PlusCircle,
+  TrendingUp,
+  Upload,
+  Users
+} from 'lucide-react';
+import Link from 'next/link';
 
 import { Badge } from "@/components/ui/badge";
 

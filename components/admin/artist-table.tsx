@@ -16,7 +16,6 @@ interface ArtistTableProps {
 }
 
 export function ArtistTable({ artists }: ArtistTableProps) {
-  console.log(artists)
   const getStatusColor = (status: Artist['status']) => {
     switch (status) {
       case 'active':
@@ -57,8 +56,8 @@ export function ArtistTable({ artists }: ArtistTableProps) {
                 <TableCell className="font-medium">{artist.displayName}</TableCell>
                 <TableCell className="text-sm">{artist.email}</TableCell>
                 <TableCell className="text-sm">
-                  {artist.managerName ? (
-                    <span className="text-primary">{artist.managerName}</span>
+                  {artist.manager_name ? (
+                    <span className="text-primary">{artist.manager_name}</span>
                   ) : (
                     <span className="text-muted-foreground italic">Unassigned</span>
                   )}

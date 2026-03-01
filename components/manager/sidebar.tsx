@@ -34,7 +34,7 @@ export function ManagerSidebar() {
   return (
     <aside className="w-64 bg-card border-r border-border p-6 hidden md:flex flex-col">
       {/* Logo */}
-      <Link href="/manager" className="flex items-center gap-2 mb-8">
+      <Link href="/manager" className="flex items-center gap-2 mb-8 ml-2">
         <Music className="w-6 h-6 text-primary" />
         <span className="font-bold text-lg">Cloco Music</span>
       </Link>

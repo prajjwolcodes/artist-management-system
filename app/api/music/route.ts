@@ -5,12 +5,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 // create a new song for an artist / only artist can create music
 export async function POST(req: NextRequest) {
+    const client = await pool.connect();
     try {
         const { authorized, user } = authorize(req, ["artist"]);
         if (!authorized || !user) {
             return NextResponse.json({ error: "Forbidden to perform this action" }, { status: 403 });
         }
-        const { title, album_name, genre } = await req.json();
+        const { title, album_name, genre, createdAt } = await req.json();
 
         if (!title || !genre || !album_name) {
             return NextResponse.json(
@@ -18,14 +19,38 @@ export async function POST(req: NextRequest) {
                 { status: 400 }
             );
         }
-        await pool.query(
-            `INSERT INTO music (title, album_name, genre, artist_id) VALUES ($1, $2, $3, $4)`,
-            [title, album_name, genre, user.id]
+
+        await client.query("BEGIN");
+
+        if (createdAt) {
+            await client.query(
+                `INSERT INTO music (title, album_name, genre, artist_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)`,
+                [title, album_name, genre, user.id, createdAt]
+            );
+        } else {
+            await client.query(
+                `INSERT INTO music (title, album_name, genre, artist_id) VALUES ($1, $2, $3, $4)`,
+                [title, album_name, genre, user.id]
+            );
+        }
+
+        await client.query(
+            `UPDATE artists
+             SET first_release_year = COALESCE((SELECT MIN(EXTRACT(YEAR FROM created_at))::int FROM music WHERE artist_id = $1), 0),
+                 no_of_albums_released = COALESCE((SELECT COUNT(DISTINCT NULLIF(TRIM(album_name), ''))::int FROM music WHERE artist_id = $1), 0),
+                 updated_at = CURRENT_TIMESTAMP
+             WHERE user_id = $1`,
+            [user.id]
         );
+
+        await client.query("COMMIT");
         return NextResponse.json({ message: "Music created successfully" }, { status: 201 });
     } catch (error) {
+        await client.query("ROLLBACK");
         console.log(error)
         return NextResponse.json({ error: "Failed to create music" }, { status: 500 });
+    } finally {
+        client.release();
     }
 }
 

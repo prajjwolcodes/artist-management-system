@@ -61,6 +61,8 @@ export default function ArtistsPage() {
         manager_name: artist.manager_name,
       }));
 
+      console.log("Dara", data)
+
       setArtists(transformedArtists);
       setPagination(data.pagination);
     } catch (error) {

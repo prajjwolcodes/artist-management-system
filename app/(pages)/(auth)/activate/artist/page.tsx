@@ -148,7 +148,7 @@ export default function ActivateAccountPage() {
                                 />
                             </div>
 
-                            <div className="w-1/2 pr-4">
+                            <div className="pr-4">
                                 <label htmlFor="gender" className="text-sm font-medium">
                                     Gender
                                 </label>

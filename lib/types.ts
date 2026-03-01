@@ -34,6 +34,7 @@ export interface Artist {
     createdAt: string;
     managerId?: string;
     managerName?: string;
+    manager_name?: string;
 }
 
 export interface MusicTrack {

@@ -100,28 +100,18 @@ export default function AdminDashboard() {
       value: stats.totalManagers,
       description: 'Active artist managers',
       icon: Users,
-      color: 'text-blue-600',
     },
     {
       title: 'Total Artists',
       value: stats.totalArtists,
       description: 'Registered in system',
       icon: Music2,
-      color: 'text-purple-600',
     },
     {
       title: 'Active Artists',
       value: stats.activeArtists,
       description: `${stats.activeArtists} of ${stats.totalArtists} artists`,
       icon: CheckCircle,
-      color: 'text-green-600',
-    },
-    {
-      title: 'Pending Artists',
-      value: stats.pendingArtists,
-      description: 'Awaiting approval',
-      icon: Clock,
-      color: 'text-orange-600',
     },
   ];
 
@@ -142,13 +132,13 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-balance">Welcome back, {currentUser?.name}</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="text-3xl font-bold text-balance mt-4">Welcome, {currentUser?.name}</h1>
+        <p className="text-base mt-2 text-muted-foreground">
           Manage all platform users and monitor system activity
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {statsData.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -158,10 +148,12 @@ export default function AdminDashboard() {
             >
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">{stat.title}</p>
-                <Icon className={`h-5 w-5 ${stat.color}`} />
+                <Icon className={`h-4 w-4`} />
               </div>
-              <p className="mt-2 text-4xl font-bold">{stat.value}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{stat.description}</p>
+              <div className="flex flex-col gap-2">
+                <p className=" text-2xl font-bold">{stat.value}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{stat.description}</p>
+              </div>
             </Card>
           );
         })}
