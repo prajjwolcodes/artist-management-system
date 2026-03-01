@@ -81,7 +81,6 @@ export default function ManagerMusicPage() {
 
             const data: ArtistsApiResponse = await response.json();
             const activeArtists = data.artists.filter(artist => artist.is_active === true); // Filter out artists without a name
-            console.log(data)
             setArtists(activeArtists);
         } catch (error) {
             console.error('Error fetching artists:', error);
@@ -124,54 +123,54 @@ export default function ManagerMusicPage() {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-2">
             {/* Header */}
             <div className="flex items-center gap-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
-                    <Music className="w-6 h-6 text-primary" />
+                    <Music className="w-5 h-5 text-primary" />
                 </div>
-                <div>
-                    <h1 className="text-3xl font-bold text-foreground">Your Artists&apos; Music</h1>
-                    <p className="text-muted-foreground mt-1">View music created by your managed artists</p>
-                </div>
-            </div>
+                <div className='flex flex-row justify-between items-center w-full'>
+                    <h1 className="text-2xl font-bold text-foreground">Your Artists&apos; Music</h1>
 
-            {/* Filter Section */}
-            <div className="flex items-center gap-3">
-                <Filter className="w-5 h-5 text-muted-foreground" />
-                <div className="flex items-center gap-2">
-                    <label htmlFor="artist-filter" className="text-sm font-medium">
-                        Filter by Artist:
-                    </label>
-                    <Select
-                        value={selectedArtistId}
-                        onValueChange={(value) => setSelectedArtistId(value)}
-                    >
-                        <SelectTrigger className="w-62.5">
-                            <SelectValue placeholder="Select an artist" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="all">All Artists</SelectItem>
-                            {artists.map((artist) => (
-                                <SelectItem key={artist.id} value={artist.id}>
-                                    {artist.name || artist.email}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <div className="flex items-center gap-1">
+                        <Filter className="w-5 h-5 text-muted-foreground" />
+                        <div className="flex items-center gap-2">
+                            <Select
+                                value={selectedArtistId}
+                                onValueChange={(value) => setSelectedArtistId(value)}
+                            >
+                                <SelectTrigger className="w-62.5">
+                                    <SelectValue placeholder="Select an artist" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Artists</SelectItem>
+                                    {artists.map((artist) => (
+                                        <SelectItem key={artist.id} value={artist.id}>
+                                            {artist.name || artist.email}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        {selectedArtistId !== 'all' && (
+                            <button
+                                onClick={() => setSelectedArtistId('all')}
+                                className="text-sm text-muted-foreground hover:text-foreground underline"
+                            >
+                                Clear filter
+                            </button>
+                        )}
+                    </div>
                 </div>
-                {selectedArtistId !== 'all' && (
-                    <button
-                        onClick={() => setSelectedArtistId('all')}
-                        className="text-sm text-muted-foreground hover:text-foreground underline"
-                    >
-                        Clear filter
-                    </button>
-                )}
+
+
             </div>
+            <p className="text-base text-muted-foreground mb-8">View all your tracks and albums</p>
+            {/* Filter Section */}
+
 
             {/* Music Gallery */}
-            <MusicGalleryView tracks={tracks} />
+            <MusicGalleryView tracks={tracks} artistCount={artists.length} />
 
             {/* Pagination Controls */}
             {pagination.totalPages > 1 && (

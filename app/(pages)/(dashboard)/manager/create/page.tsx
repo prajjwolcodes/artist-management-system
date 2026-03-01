@@ -23,6 +23,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { AlertTriangle } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 
 export default function CreateArtistPage() {
   const [isLoading, setIsLoading] = useState(false);
@@ -220,8 +221,8 @@ export default function CreateArtistPage() {
       {/* Header with Import Button */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground">Create Artist</h1>
-          <p className="text-muted-foreground mt-2">Invite a new artist and send activation link by email</p>
+          <h1 className="text-2xl font-bold text-foreground">Create Artist</h1>
+          <p className="text-base text-muted-foreground mt-2">Invite a new artist and send activation</p>
         </div>
         <Button
           onClick={() => {
@@ -246,9 +247,7 @@ export default function CreateArtistPage() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label htmlFor="displayName" className="text-sm font-medium">
-                Display Name *
-              </label>
+              <Label htmlFor="displayName">Name *</Label>
               <Input
                 id="displayName"
                 placeholder="Artist Name"
@@ -259,9 +258,7 @@ export default function CreateArtistPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email *
-              </label>
+              <Label htmlFor="email">Email *</Label>
               <Input
                 id="email"
                 type="email"

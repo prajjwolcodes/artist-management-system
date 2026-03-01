@@ -20,13 +20,13 @@ export function ArtistTable({ artists }: ArtistTableProps) {
   const getStatusColor = (status: Artist['status']) => {
     switch (status) {
       case 'active':
-        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100';
+        return 'bg-green-500/10 text-green-700 dark:text-green-400';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100';
+        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400';
       case 'inactive':
-        return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100';
+        return 'bg-gray-500/10 text-gray-700 dark:text-gray-400';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500/10 text-gray-700 dark:text-gray-400';
     }
   };
 
@@ -66,7 +66,7 @@ export function ArtistTable({ artists }: ArtistTableProps) {
                 <TableCell>{artist.first_release_year}</TableCell>
                 <TableCell className="text-center">{artist.no_of_albums_released}</TableCell>
                 <TableCell>
-                  <Badge className={getStatusColor(artist.status)}>
+                  <Badge className={getStatusColor(artist.status)} variant="outline">
                     {artist.status.charAt(0).toUpperCase() + artist.status.slice(1)}
 
                   </Badge>

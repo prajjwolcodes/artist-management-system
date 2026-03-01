@@ -1,63 +1,55 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth-context';
-import { Button } from '@/components/ui/button';
-import { BarChart3, Users, LogOut, Settings } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Music, Users, Plus, Settings, LayoutDashboard, BarChart3 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import LogoutButton from '@/app/(pages)/(auth)/logout/page';
+
+
+const navItems = [
+  { href: '/admin', label: 'Dashboard', icon: BarChart3 },
+  { href: '/admin/managers', label: 'Managers', icon: Users },
+  { href: '/admin/artists', label: 'Artists', icon: Users },
+];
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const { logout } = useAuth();
-
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
-
-  const navItems = [
-    { href: '/admin', label: 'Dashboard', icon: BarChart3 },
-    { href: '/admin/managers', label: 'Managers', icon: Users },
-    { href: '/admin/artists', label: 'Artists', icon: Users },
-  ];
 
   return (
-    <aside className="flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground">
-      <div className="border-b border-sidebar-border p-6">
-        <h1 className="text-2xl font-bold text-sidebar-primary">Admin Panel</h1>
-        <p className="mt-1 text-sm text-sidebar-accent-foreground">Manage the platform</p>
-      </div>
+    <aside className="w-64 bg-card border-r border-border p-6 hidden md:flex flex-col">
+      {/* Logo */}
+      <Link href="/admin" className="flex items-center gap-2 mb-8">
+        <Music className="w-6 h-6 text-primary" />
+        <span className="font-bold text-lg">Cloco Music</span>
+      </Link>
 
-      <nav className="flex-1 space-y-2 p-4">
+      {/* Navigation */}
+      <nav className="space-y-2 flex-1">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+          const isActive = pathname === item.href;
 
           return (
-            <Link key={item.href} href={item.href}>
-              <Button
-                variant={isActive ? 'default' : 'ghost'}
-                className="w-full justify-start gap-3"
-              >
-                <Icon className="h-4 w-4" />
-                {item.label}
-              </Button>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-sm font-medium',
+                isActive
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground '
+              )}
+            >
+              <Icon className="w-5 h-5" />
+              <span>{item.label}</span>
             </Link>
           );
         })}
+
       </nav>
 
-      <div className="border-t border-sidebar-border p-4">
-        <Button
-          onClick={handleLogout}
-          variant="outline"
-          className="w-full justify-start gap-3"
-        >
-          <LogOut className="h-4 w-4" />
-          Logout
-        </Button>
-      </div>
+      <LogoutButton />
     </aside>
   );
-}
+} 

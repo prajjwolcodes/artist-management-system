@@ -15,6 +15,7 @@ interface MusicTrack {
 
 interface MusicGalleryViewProps {
     tracks: MusicTrack[];
+    artistCount: number;
 }
 
 const genreColors: Record<string, { bg: string; text: string }> = {
@@ -33,7 +34,7 @@ const genreBadgeStyles: Record<string, string> = {
     country: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
 };
 
-export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
+export function MusicGalleryView({ tracks, artistCount }: MusicGalleryViewProps) {
     if (tracks.length === 0) {
         return (
             <div className="flex items-center justify-center min-h-80 bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-lg border border-border">
@@ -44,7 +45,7 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
                         </div>
                     </div>
                     <div>
-                        <p className="text-lg font-semibold text-foreground">No music yet</p>
+                        <p className="text-lg font-semibold text-foreground">No music found</p>
                         <p className="text-sm text-muted-foreground mt-2">
                             Your artists haven&apos;t created any music yet
                         </p>
@@ -57,7 +58,7 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
     return (
         <div className="space-y-6">
             {/* Stats Summary */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-card border border-border rounded-lg p-4">
                     <div className="flex items-center justify-between">
                         <div>
@@ -67,6 +68,19 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
                         <Music className="w-10 h-10 text-primary/20" />
                     </div>
                 </div>
+
+                <div className="bg-card border border-border rounded-lg p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-muted-foreground">Total Artists</p>
+                            <p className="text-2xl font-bold text-foreground">
+                                {artistCount}
+                            </p>
+                        </div>
+                        <Music className="w-10 h-10 text-primary/20" />
+                    </div>
+                </div>
+
                 <div className="bg-card border border-border rounded-lg p-4">
                     <div className="flex items-center justify-between">
                         <div>
@@ -82,14 +96,7 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
 
             {/* Music Grid */}
             <div>
-                <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-foreground">Your Artists&apos; Music</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        View all music created by your managed artists
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {tracks.map((track) => {
                         const colors = genreColors[track.genre] || genreColors['rock'];
                         const badgeStyle = genreBadgeStyles[track.genre] || genreBadgeStyles['rock'];
@@ -101,7 +108,7 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
                             >
                                 {/* Album Art Background */}
                                 <div
-                                    className={`relative pb-[100%] w-full transition-all duration-300 ${colors.bg}`}
+                                    className={`relative pb-[90%] w-full transition-all duration-300 ${colors.bg}`}
                                 >
                                     <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-primary/20 to-primary/5">
                                         <div className={`p-6 rounded-full ${colors.bg}`}>
@@ -114,11 +121,8 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
                                 <div className="p-4 bg-card space-y-3">
                                     <div>
                                         <h4 className="font-semibold text-foreground line-clamp-2 hover:text-primary transition-colors">
-                                            {track.title}
+                                            {track.title} ( {track.album_name} )
                                         </h4>
-                                        <p className="text-sm text-muted-foreground line-clamp-1 mt-1">
-                                            {track.album_name}
-                                        </p>
                                     </div>
 
                                     {/* Artist Info */}
@@ -126,7 +130,7 @@ export function MusicGalleryView({ tracks }: MusicGalleryViewProps) {
                                         <div className="flex items-center justify-between gap-2">
                                             <div className="flex-1 min-w-0">
                                                 {/* <p className="text-xs text-muted-foreground">Artist</p> */}
-                                                <p className="text-sm font-medium text-foreground truncate"><User className="w-4 h-4 inline mr-1" /> {track.artist_name}</p>
+                                                <p className="text-sm font-medium text-foreground truncate"><User className="w-4 h-4 inline mr-1 font-normal" /> {track.artist_name}</p>
                                             </div>
                                         </div>
                                     </div>

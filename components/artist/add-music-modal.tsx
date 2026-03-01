@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select';
 import { MusicTrack } from '@/lib/types';
 import { toast } from 'sonner';
+import { Label } from '../ui/label';
 
 interface AddMusicModalProps {
   open: boolean;
@@ -92,9 +93,7 @@ export function AddMusicModal({
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
-              Track Title <span className="text-red-500">*</span>
-            </label>
+            <Label htmlFor="title" className='mb-2'>Track Title</Label>
             <Input
               placeholder="Enter track title"
               value={formData.title}
@@ -107,9 +106,7 @@ export function AddMusicModal({
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
-              Album Name <span className="text-red-500">*</span>
-            </label>
+            <Label htmlFor="album_name" className='mb-2'>Album Name</Label>
             <Input
               placeholder="Enter album name"
               value={formData.album_name}
@@ -121,44 +118,43 @@ export function AddMusicModal({
             />
           </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
-              Genre <span className="text-red-500">*</span>
-            </label>
-            <Select
-              value={formData.genre}
-              onValueChange={(value) =>
-                setFormData({
-                  ...formData,
-                  genre: value as 'rnb' | 'country' | 'classic' | 'rock' | 'jazz',
-                })
-              }
-            >
-              <SelectTrigger className="border-border">
-                <SelectValue placeholder="Select a genre" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="rock">Rock</SelectItem>
-                <SelectItem value="rnb">R&B</SelectItem>
-                <SelectItem value="jazz">Jazz</SelectItem>
-                <SelectItem value="classic">Classical</SelectItem>
-                <SelectItem value="country">Country</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-foreground">
-              Release Date
-            </label>
-            <Input
-              type="date"
-              value={formData.createdAt}
-              onChange={(e) =>
-                setFormData({ ...formData, createdAt: e.target.value })
-              }
-              className="border-border"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2 ">
+              <Label htmlFor="genre" className='mb-2'>Genre</Label>
+              <Select
+                value={formData.genre}
+                onValueChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    genre: value as 'rnb' | 'country' | 'classic' | 'rock' | 'jazz',
+                  })
+                }
+              >
+                <SelectTrigger className="w-full border-border">
+                  <SelectValue placeholder="Select a genre" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="rock">Rock</SelectItem>
+                  <SelectItem value="rnb">R&B</SelectItem>
+                  <SelectItem value="jazz">Jazz</SelectItem>
+                  <SelectItem value="classic">Classical</SelectItem>
+                  <SelectItem value="country">Country</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="createdAt" className='mb-2'>Release Date</Label>
+              <Input
+                type="date"
+                value={formData.createdAt}
+                onChange={(e) =>
+                  setFormData({ ...formData, createdAt: e.target.value })
+                }
+                className="border-border"
+              />
+            </div>
           </div>
 
           <div className="flex gap-3 pt-4">

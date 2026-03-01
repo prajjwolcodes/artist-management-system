@@ -29,7 +29,7 @@ export function MusicTable({ tracks, onDelete, onEdit }: MusicTableProps) {
   if (tracks.length === 0) {
     return (
       <div className="p-12 bg-card border border-border rounded-lg text-center">
-        <p className="text-muted-foreground">No tracks yet. Add your first track to get started!</p>
+        <p className="text-muted-foreground">No music found</p>
       </div>
     );
   }
@@ -37,8 +37,8 @@ export function MusicTable({ tracks, onDelete, onEdit }: MusicTableProps) {
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
       <Table>
-        <TableHeader>
-          <TableRow className="border-b border-border">
+        <TableHeader className="bg-muted">
+          <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Album</TableHead>
             <TableHead>Genre</TableHead>
@@ -48,7 +48,7 @@ export function MusicTable({ tracks, onDelete, onEdit }: MusicTableProps) {
         </TableHeader>
         <TableBody>
           {tracks.map((track) => (
-            <TableRow key={track.id} className="border-b border-border hover:bg-accent/50">
+            <TableRow key={track.id}>
               <TableCell className="font-medium">{track.title}</TableCell>
               <TableCell className="text-muted-foreground text-sm">{track.album}</TableCell>
               <TableCell className="text-sm">{track.genre}</TableCell>

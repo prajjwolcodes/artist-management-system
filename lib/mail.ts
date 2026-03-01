@@ -13,12 +13,12 @@ export async function sendActivationEmail(
     });
 
     await transporter.sendMail({
-        from: `"Music Platform" <${process.env.EMAIL_USER}>`,
+        from: `"Cloco Music <${process.env.EMAIL_USER}>`,
         to: email,
         subject: "Activate Your Account",
         html: `
       <h2>Welcome!</h2>
-      <p>You have been invited to join the platform.</p>
+      <p>You have been invited to join Cloco Music.</p>
       <p>Click below to activate your account:</p>
       <a href="${activationLink}">Activate Account</a>
       <p>This link expires in 24 hours.</p>

@@ -177,7 +177,7 @@ export default function ActivateAccountPage() {
                                         value={formData.gender}
                                         onValueChange={(value) => handleInputChange('gender', value)}
                                     >
-                                        <SelectTrigger>
+                                        <SelectTrigger className='w-full border-border'>
                                             <SelectValue placeholder="Select gender" />
                                         </SelectTrigger>
                                         <SelectContent>

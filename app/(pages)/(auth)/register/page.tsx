@@ -174,12 +174,12 @@ export default function RegisterPage() {
                         <div className="rounded-lg border border-border bg-muted/40 p-4 space-y-2 text-sm">
                             <div className="flex justify-between">
                                 <span className="text-muted-foreground">Email</span>
-                                <span className="font-mono">superadmin@example.com</span>
+                                <span className="font-mono">{process.env.NEXT_PUBLIC_DEMO_EMAIL}</span>
                             </div>
 
                             <div className="flex justify-between">
                                 <span className="text-muted-foreground">Password</span>
-                                <span className="font-mono">superadmin123</span>
+                                <span className="font-mono">{process.env.NEXT_PUBLIC_DEMO_PASSWORD}</span>
                             </div>
                         </div>
 
@@ -217,7 +217,7 @@ export default function RegisterPage() {
                 <Card className="border border-border bg-card">
                     <CardHeader>
                         <CardTitle className="text-lg">
-                            Create Super Admin Account
+                            Create Admin Account
                         </CardTitle>
                     </CardHeader>
 
@@ -283,15 +283,15 @@ export default function RegisterPage() {
                             </div>
 
                             {/* Gender + Phone */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
+                            <div className="grid grid-cols-2 gap-4 w-full">
+                                <div className="space-y-2 w-full">
                                     <Label>Gender</Label>
                                     <Select
                                         onValueChange={(value) =>
                                             handleInputChange('gender', value)
                                         }
                                     >
-                                        <SelectTrigger>
+                                        <SelectTrigger className='w-full border-border'>
                                             <SelectValue placeholder="Select gender" />
                                         </SelectTrigger>
                                         <SelectContent>

@@ -28,8 +28,8 @@ export function ManagerRecentTable({ artists }: { artists: RecentArtist[] }) {
   return (
     <div className="border border-border rounded-lg bg-card overflow-hidden">
       <Table>
-        <TableHeader>
-          <TableRow className="border-b border-border">
+        <TableHeader className="bg-muted">
+          <TableRow>
             <TableHead>Artist Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Albums</TableHead>
@@ -38,21 +38,29 @@ export function ManagerRecentTable({ artists }: { artists: RecentArtist[] }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {artists.map((artist) => (
-            <TableRow key={artist.id} className="border-b border-border hover:bg-accent/50">
-              <TableCell className="font-medium">{artist.name || 'N/A'}</TableCell>
-              <TableCell className="text-muted-foreground text-sm">{artist.email}</TableCell>
-              <TableCell>{artist.no_of_albums_released ?? 0}</TableCell>
-              <TableCell>
-                <Badge className={getStatusColor(artist.is_active)} variant="outline">
-                  {artist.is_active ? 'Active' : 'Pending'}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-muted-foreground text-sm">
-                {new Date(artist.created_at).toLocaleDateString()}
+          {artists.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                No artists found
               </TableCell>
             </TableRow>
-          ))}
+          ) : (
+            artists.map((artist) => (
+              <TableRow key={artist.id}>
+                <TableCell className="font-medium">{artist.name || 'N/A'}</TableCell>
+                <TableCell className="text-muted-foreground text-sm">{artist.email}</TableCell>
+                <TableCell>{artist.no_of_albums_released ?? 0}</TableCell>
+                <TableCell>
+                  <Badge className={getStatusColor(artist.is_active)} variant="outline">
+                    {artist.is_active ? 'Active' : 'Pending'}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-muted-foreground text-sm">
+                  {new Date(artist.created_at).toLocaleDateString()}
+                </TableCell>
+              </TableRow>
+            ))
+          )}
         </TableBody>
       </Table>
     </div>

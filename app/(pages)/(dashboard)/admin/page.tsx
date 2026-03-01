@@ -74,8 +74,6 @@ export default function AdminDashboard() {
       const artistsList = artistsData.artists || [];
       setArtists(artistsList.slice(0, 5));
 
-
-      // Calculate stats
       const activeCount = artistsList.filter((a: Artist) => a.is_active).length;
       const pendingCount = artistsList.filter((a: Artist) => !a.is_active).length;
 
@@ -175,9 +173,6 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-lg font-semibold">Recent Managers</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Manage artist managers
-              </p>
             </div>
             <Link href="/admin/managers">
               <Button variant="outline" size="sm">
@@ -223,9 +218,6 @@ export default function AdminDashboard() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-lg font-semibold">Recent Artists</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                View all registered artists
-              </p>
             </div>
             <Link href="/admin/artists">
               <Button variant="outline" size="sm">

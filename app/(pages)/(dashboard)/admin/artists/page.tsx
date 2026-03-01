@@ -103,13 +103,12 @@ export default function ArtistsPage() {
 
       <Card className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="mb-6 space-y-4">
-          <Input
-            placeholder="Search by name or email..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-
-          <div className="flex gap-2">
+          <div className="flex flex-row gap-2 justify-center items-center">
+            <Input
+              placeholder="Search by name or email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
             <Select
               value={statusFilter}
               onValueChange={(value: any) => setStatusFilter(value)}
@@ -123,14 +122,13 @@ export default function ArtistsPage() {
                 <SelectItem value="pending">Pending</SelectItem>
               </SelectContent>
             </Select>
-
-            <div className="ml-auto text-sm text-muted-foreground pt-2">
-              Showing {filteredArtists.length} of {pagination.total} artists
-            </div>
           </div>
         </div>
 
         <ArtistTable artists={filteredArtists} />
+        <div className="ml-auto text-sm text-muted-foreground pt-2">
+          Showing {filteredArtists.length} of {pagination.total} artists
+        </div>
       </Card>
 
       {pagination.totalPages > 1 && (

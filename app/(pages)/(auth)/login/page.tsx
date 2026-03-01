@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { Music } from 'lucide-react';
+import { Label } from '@/components/ui/label';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -56,14 +57,15 @@ export default function LoginPage() {
                 {/* Card */}
                 <Card className="border border-border bg-card">
                     <CardHeader>
-                        <CardTitle className='text-lg'>Sign In with your account</CardTitle>
+                        <CardTitle className='text-base'>Sign In with your account</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
-                                <label htmlFor="email" className="text-sm font-medium">
+
+                                <Label htmlFor="email" className="text-sm font-medium">
                                     Email
-                                </label>
+                                </Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -75,9 +77,9 @@ export default function LoginPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label htmlFor="password" className="text-sm font-medium">
+                                <Label htmlFor="password" className="text-sm font-medium">
                                     Password
-                                </label>
+                                </Label>
                                 <Input
                                     id="password"
                                     type="password"

@@ -43,7 +43,7 @@ export function ManagerSidebar() {
       <nav className="space-y-2 flex-1">
         {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+          const isActive = pathname === item.href;
 
           return (
             <Link

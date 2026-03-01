@@ -169,22 +169,18 @@ export default function ArtistsPage() {
         </Button>
       </div>
 
-      <Card className="p-4 bg-card border border-border">
-        <p className="text-sm text-muted-foreground">
-          Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} total artists)
-        </p>
-      </Card>
+
 
       {/* Table */}
       {isLoading ? (
         <Card className="p-12 bg-card border border-border text-center">
           <p className="text-muted-foreground">Loading artists...</p>
         </Card>
-      ) : pageArtists.length > 0 ? (
+      ) : (
         <div className="border border-border rounded-lg bg-card overflow-hidden">
           <Table>
-            <TableHeader>
-              <TableRow className="border-b border-border">
+            <TableHeader className="bg-muted">
+              <TableRow>
                 <TableHead>Artist Name</TableHead>
                 <TableHead>Email</TableHead>
                 <TableHead>First Release</TableHead>
@@ -195,87 +191,99 @@ export default function ArtistsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pageArtists.map((artist) => (
-                <TableRow key={artist.id} className="border-b border-border hover:bg-accent/50">
-                  <TableCell className="font-medium">{artist.name || 'N/A'}</TableCell>
-                  <TableCell className="text-muted-foreground text-sm">{artist.email}</TableCell>
-                  <TableCell>{artist.first_release_year ?? '-'}</TableCell>
-                  <TableCell>{artist.no_of_albums_released ?? 0}</TableCell>
-                  <TableCell>{Number(artist.music_count || 0)}</TableCell>
-                  <TableCell>
-                    <Badge className={getStatusColor(artist.is_active)} variant="outline">
-                      {artist.is_active ? 'Active' : 'Pending'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2 justify-between">
-                      {!artist.is_active && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-8 px-2 text-xs"
-                          disabled={isResending === artist.id}
-                          onClick={() => handleResendActivation(artist)}
-                          title="Resend activation link"
-                        >
-                          <RefreshCw className="w-4 h-4 mr-1" />
-                          {isResending === artist.id ? 'Sending...' : 'Resend'}
-                        </Button>
-                      )}
-
-
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogTitle>Delete Artist</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete {artist.name}? This action cannot be
-                            undone.
-                          </AlertDialogDescription>
-                          <div className="flex gap-2 justify-end">
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={() => handleDeleteArtist(artist)}
-                              className="bg-destructive text-destructive-foreground"
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </div>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
+              {pageArtists.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                    No artists found
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                pageArtists.map((artist) => (
+                  <TableRow key={artist.id}>
+                    <TableCell className="font-medium">{artist.name === " " ? 'Not Activated' : artist.name}</TableCell>
+                    <TableCell className="text-muted-foreground text-sm">{artist.email}</TableCell>
+                    <TableCell>{artist.first_release_year ?? '-'}</TableCell>
+                    <TableCell>{artist.no_of_albums_released ?? 0}</TableCell>
+                    <TableCell>{Number(artist.music_count || 0)}</TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(artist.is_active)} variant="outline">
+                        {artist.is_active ? 'Active' : 'Pending'}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2 justify-between">
+                        {!artist.is_active && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-8 px-2 text-xs"
+                            disabled={isResending === artist.id}
+                            onClick={() => handleResendActivation(artist)}
+                            title="Resend activation link"
+                          >
+                            <RefreshCw className="w-4 h-4 mr-1" />
+                            {isResending === artist.id ? 'Sending...' : 'Resend'}
+                          </Button>
+                        )}
+
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button variant="ghost" size="sm">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogTitle>Delete Artist</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete {artist.name}? This action cannot be
+                              undone.
+                            </AlertDialogDescription>
+                            <div className="flex gap-2 justify-end">
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDeleteArtist(artist)}
+                                className="bg-destructive text-destructive-foreground"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </div>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
-      ) : (
-        <Card className="p-12 bg-card border border-border text-center">
-          <p className="text-muted-foreground">No artists found. Try adjusting your filters.</p>
-        </Card>
       )}
 
-      <div className="flex items-center justify-end gap-3">
-        <Button
-          variant="outline"
-          disabled={isLoading || !pagination.hasPrevPage}
-          onClick={() => fetchArtists(page - 1)}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          disabled={isLoading || !pagination.hasNextPage}
-          onClick={() => fetchArtists(page + 1)}
-        >
-          Next
-        </Button>
-      </div>
+      <Card className="flex flex-row w-full justify-between items-center px-8 py-2 bg-card border border-border">
+        <p className="text-sm text-muted-foreground">
+          Showing page {pagination.page} of {pagination.totalPages} ({pagination.total} total artists)
+        </p>
+
+        <div className="flex items-center justify-end gap-3">
+          <Button
+            variant="outline"
+            disabled={isLoading || !pagination.hasPrevPage}
+            onClick={() => fetchArtists(page - 1)}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            disabled={isLoading || !pagination.hasNextPage}
+            onClick={() => fetchArtists(page + 1)}
+          >
+            Next
+          </Button>
+        </div>
+      </Card>
+
+
     </div>
   );
 }

@@ -108,14 +108,7 @@ export function MusicGallery({ tracks, onDelete, onEdit }: MusicGalleryProps) {
 
             {/* Music Grid */}
             <div>
-                <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-foreground">Your Music</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                        Manage and organize your tracks across albums
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {tracks.map((track) => {
                         const colors = genreColors[track.genre] || genreColors['rock'];
                         const badgeStyle = genreBadgeStyles[track.genre] || genreBadgeStyles['rock'];
@@ -131,7 +124,7 @@ export function MusicGallery({ tracks, onDelete, onEdit }: MusicGalleryProps) {
                             >
                                 {/* Album Art Background */}
                                 <div
-                                    className={`relative pb-[100%] w-full transition-all duration-300 ${colors.bg}`}
+                                    className={`relative pb-[90%] w-full transition-all duration-300 ${colors.bg}`}
                                 >
                                     <div className="absolute inset-0 flex items-center justify-center bg-linear-to-br from-primary/20 to-primary/5">
                                         <div className={`p-6 rounded-full ${colors.bg}`}>

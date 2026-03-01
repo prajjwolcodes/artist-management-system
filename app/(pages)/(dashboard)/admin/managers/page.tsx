@@ -19,8 +19,8 @@ export default function ManagersPage() {
 
   const [managers, setManagers] = useState<(User & { password?: string })[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isResending, setIsResending] = useState<string | null>(null);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,
@@ -51,6 +51,7 @@ export default function ManagersPage() {
           email: manager.email,
           name: `${manager.first_name || 'Not'} ${manager.last_name || 'Activated'}`.trim(),
           role: manager.role,
+          is_active: manager.is_active,
           profile: {
             first_name: manager.first_name,
             last_name: manager.last_name,
@@ -73,12 +74,6 @@ export default function ManagersPage() {
       setLoading(false);
     }
   };
-
-  const filteredManagers = managers.filter(
-    (manager) =>
-      manager.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      manager.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const handleCreateManager = async (email: string) => {
     try {
@@ -126,6 +121,31 @@ export default function ManagersPage() {
     }
   };
 
+  const handleResendActivation = async (manager: User & { password?: string; is_active?: boolean }) => {
+    setIsResending(manager.id);
+    try {
+      const response = await fetch('/api/users/resend-activation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: manager.email }),
+      });
+
+      const data = (await response.json()) as { message?: string; error?: string };
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to resend activation link');
+      }
+
+      toast.success(data.message || 'Activation link sent successfully');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to resend activation link');
+    } finally {
+      setIsResending(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -148,16 +168,12 @@ export default function ManagersPage() {
       </div>
 
       <Card className="rounded-2xl border border-border bg-card p-6 shadow-sm">
-        <Input
-          placeholder="Search by name or email..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="mb-6"
-        />
 
         <ManagerTable
-          managers={filteredManagers}
+          managers={managers}
           onDelete={handleDeleteManager}
+          onResendActivation={handleResendActivation}
+          isResending={isResending}
         />
       </Card>
 
