@@ -50,7 +50,7 @@ export function MusicTable({ tracks, onDelete, onEdit }: MusicTableProps) {
           {tracks.map((track) => (
             <TableRow key={track.id}>
               <TableCell className="font-medium">{track.title}</TableCell>
-              <TableCell className="text-muted-foreground text-sm">{track.album}</TableCell>
+              <TableCell className="text-muted-foreground text-sm">{track.album_name}</TableCell>
               <TableCell className="text-sm">{track.genre}</TableCell>
               <TableCell className="text-muted-foreground text-sm">{track.createdAt}</TableCell>
               <TableCell>
