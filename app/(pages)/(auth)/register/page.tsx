@@ -68,6 +68,7 @@ export default function RegisterPage() {
                 setAdminExists(data.exists);
             } catch (error) {
                 toast.error('Failed to check system status');
+                console.log(error)
                 setAdminExists(true); // safer default
             }
         }
