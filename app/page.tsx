@@ -42,7 +42,7 @@ export default function MusicLandingPage() {
           <div className="absolute inset-0 bg-primary/[0.02]" />
           <div className="absolute top-0 right-0 w-1/3 h-full bg-primary/[0.05] -skew-x-12 transform origin-top-right hidden lg:block" />
           <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
-            <div className="max-w-3xl mx-auto text-center space-y-6 sm:space-y-7 md:space-y-8">
+            <div className="max-w-3xl mx-auto md:mx-0 md:mb-10 text-center space-y-6 sm:space-y-7 md:space-y-8">
               {/* Badge */}
               <div className="flex justify-center">
                 <Badge variant="outline" className="px-3 py-1 sm:px-4 sm:py-1.5 text-xs sm:text-sm font-medium">
